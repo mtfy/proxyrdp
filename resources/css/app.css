@@ -2,3 +2,145 @@
 @tailwind components;
 @tailwind utilities;
 
+@font-face {
+    font-family: 'Motify Pro';
+    src: url('./fonts/MotifyPro-Regular.eot'),
+    	url('./fonts/MotifyPro-Regular.eot?#iefix') format('embedded-opentype'),
+    	url('./fonts/MotifyPro-Regular.woff2') format('woff2'),
+        url('./fonts/MotifyPro-Regular.woff') format('woff'),
+        url('./fonts/MotifyPro-Regular.ttf') format('truetype'),
+        url('./fonts/MotifyPro-Regular.otf') format('opentype');
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Motify Pro';
+    src: url('./fonts/MotifyPro-Medium.eot'),
+    	url('./fonts/MotifyPro-Medium.eot?#iefix') format('embedded-opentype'),
+    	url('./fonts/MotifyPro-Medium.woff2') format('woff2'),
+        url('./fonts/MotifyPro-Medium.woff') format('woff'),
+        url('./fonts/MotifyPro-Medium.ttf') format('truetype'),
+        url('./fonts/MotifyPro-Medium.otf') format('opentype');
+    font-weight: 500;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Motify Pro';
+    src: url('./fonts/MotifyPro-Bold.eot'),
+    	url('./fonts/MotifyPro-Bold.eot?#iefix') format('embedded-opentype'),
+    	url('./fonts/MotifyPro-Bold.woff2') format('woff2'),
+        url('./fonts/MotifyPro-Bold.woff') format('woff'),
+        url('./fonts/MotifyPro-Bold.ttf') format('truetype'),
+        url('./fonts/MotifyPro-Bold.otf') format('opentype');
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: 'Motify Pro';
+    src: url('./fonts/MotifyPro-Black.eot'),
+    	url('./fonts/MotifyPro-Black.eot?#iefix') format('embedded-opentype'),
+    	url('./fonts/MotifyPro-Black.woff2') format('woff2'),
+        url('./fonts/MotifyPro-Black.woff') format('woff'),
+        url('./fonts/MotifyPro-Black.ttf') format('truetype'),
+        url('./fonts/MotifyPro-Black.otf') format('opentype');
+    font-weight: 900;
+    font-style: normal;
+}
+
+body.motify {
+	overflow-x: hidden;
+	font-family: -apple-system, BlinkMacSystemFont, 'Motify Pro', 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+}
+
+.motify-container {
+	display: -ms-flexbox;
+    display: flex;
+	-webkit-flex-direction: column;
+    -ms-flex-direction: column;
+    flex-direction: column;
+	align-self: center;
+	margin: 0;
+	padding: 0;
+	max-width: 100%;
+	width: 100%;
+}
+
+.motify-grid-background::before {
+	content: '';
+    background-image: url(data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAzMiAzMiIgd2lkdGg9IjMyIiBoZWlnaHQ9IjMyIiBmaWxsPSJub25lIiBzdHJva2U9InJnYigxNDggMTYzIDE4NCAvIDAuMDUpIj48cGF0aCBkPSJNMCAuNUgzMS41VjMyIi8+PC9zdmc+);
+	-webkit-mask-image: linear-gradient(to top, transparent, white);
+	mask-image: linear-gradient(to top, transparent, white);
+    min-height: 100vh;
+    width: 100%;
+    position: absolute;
+	border-width: 0px;
+	z-index: -1;
+}
+
+.motify-padder {
+	padding: 64px 36px 40px 26px;
+}
+
+.motify-header-shadow {
+	-webkit-box-shadow: 0 0 #0000, 0 0 #0000, 0 10px 15px -3px rgb(0 0 0 / .1), 0 4px 6px -4px rgb(0 0 0 / .1);
+	box-shadow: 0 0 #0000, 0 0 #0000, 0 10px 15px -3px rgb(0 0 0 / .1), 0 4px 6px -4px rgb(0 0 0 / .1);
+}
+
+@media (min-width: 640px) {
+	.motify-container {
+		max-width: 540px;
+	}
+}
+
+@media (min-width: 768px) {
+	.motify-container {
+		max-width: 720px;
+	}
+}
+
+@media (min-width: 1024px) {
+	.motify-container {
+		max-width: 960px;
+	}
+}
+
+@media (min-width: 1280px) {
+	.motify-container {
+		max-width: 1140px;
+	}
+
+	.motify-padder {
+		padding: 80px 100px 64px;
+	}
+}
+
+@media (min-width: 2048px) {
+	.motify-container {
+		max-width: 1580px;
+	}
+}
+
+*::-moz-selection {
+	color: #FFFFFF;
+	background: #D4ADFC;
+	text-shadow: 0px 1px 6px #00000020;
+	-ms-transition: opacity, color, background-color, border-color, text-decoration-color, fill, stroke 300ms cubic-bezier(0.4, 0, 0.2, 1);
+	-moz-transition: opacity, color, background-color, border-color, text-decoration-color, fill, stroke 300ms cubic-bezier(0.4, 0, 0.2, 1);
+	-webkit-transition: opacity, color, background-color, border-color, text-decoration-color, fill, stroke 300ms cubic-bezier(0.4, 0, 0.2, 1);
+	-o-transition: opacity, color, background-color, border-color, text-decoration-color, fill, stroke 300ms cubic-bezier(0.4, 0, 0.2, 1);
+	transition: opacity, color, background-color, border-color, text-decoration-color, fill, stroke 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+*::selection {
+	color: #FFFFFF;
+	background: #D4ADFC;
+	text-shadow: 0px 1px 6px #00000020;
+	-ms-transition: opacity, color, background-color, border-color, text-decoration-color, fill, stroke 300ms cubic-bezier(0.4, 0, 0.2, 1);
+	-moz-transition: opacity, color, background-color, border-color, text-decoration-color, fill, stroke 300ms cubic-bezier(0.4, 0, 0.2, 1);
+	-webkit-transition: opacity, color, background-color, border-color, text-decoration-color, fill, stroke 300ms cubic-bezier(0.4, 0, 0.2, 1);
+	-o-transition: opacity, color, background-color, border-color, text-decoration-color, fill, stroke 300ms cubic-bezier(0.4, 0, 0.2, 1);
+	transition: opacity, color, background-color, border-color, text-decoration-color, fill, stroke 300ms cubic-bezier(0.4, 0, 0.2, 1);
+}

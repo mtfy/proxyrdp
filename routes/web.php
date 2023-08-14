@@ -5,6 +5,7 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\Auth\RegistrationController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RecoveryController;
+use App\Http\Controllers\Orders\OrderController;
 use Inertia\Inertia;
 
 /*
@@ -49,6 +50,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 		Route::get('/order', [ClientController::class, 'showOrder'])
 			->name('order');
+		Route::prefix('order')->name('order.')->group(function () {
+			Route::post('server', [OrderController::class, 'server'])->name('server');
+		});
 
 		Route::get('/invoices', [ClientController::class, 'showInvoices'])
 			->name('invoices');

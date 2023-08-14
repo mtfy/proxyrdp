@@ -1,5 +1,5 @@
 <template>
-	<div class="bg-theme-background-paper flex flex-col w-full max-w-[100%] p-0 m-0 relative min-h-screen h-[100%]">
+	<div class="bg-theme-background-paper flex flex-col flex-wrap flex-grow w-full max-w-[100%] p-0 m-0 relative min-h-screen h-[100%]">
 		<div class="flex flex-col w-full max-w-[100%] p-0 m-0 relative">
 			<ClientHeader @sidebarButton="handleSidebar" :user="props.user" />
 			<div class="motify-clientarea-full-height font-monsterrat flex flex-col p-0 m-0 max-w-[100%] w-full relative top-[56px] md:top-[72px]">

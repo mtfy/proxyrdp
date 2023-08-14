@@ -31,14 +31,14 @@ class LoginController extends Controller
      */
     public function store(Request $request): RedirectResponse
     {
-        $validator = Validator::make(request()->all(), [
-			'email' => ['required', 'string', 'email', 'max:255'],
-			'password' => ['required', 'string']
-        ]);
+			$validator = Validator::make(request()->all(), [
+				'email' => ['required', 'string', 'email', 'max:255'],
+				'password' => ['required', 'string']
+			]);
 
-		if ($validator->fails()) {
-			return redirect()->back()->withErrors($validator->errors());
-        }
+			if ($validator->fails()) {
+				return redirect()->back()->withErrors($validator->errors());
+			}
 
 		$validator = $validator->validated();
 

@@ -63,6 +63,6 @@ class RegistrationController extends Controller
 
 		Auth::login($user);
 
-		return to_route('Home');
+		return redirect()->intended('/clientarea/');;
 	}
 }

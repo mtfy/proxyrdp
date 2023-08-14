@@ -1,6 +1,14 @@
 <template>
 	<header class="motify-header flex flex-col max-w-[100%] w-full bg-theme-primary-500 min-h-[56px] max-h-[56px] h-[100%] p-0 m-0 transition-all duration-300 ease-in-out fixed z-[10]" :class="proxy.scrollY > 56 ? 'motify-header-shadow' : ''" v-if="proxy.window.width < 1024">
 		<div class="flex flex-row w-full m-0 px-[16px] py-0 max-h-[56px] min-h-[56px] h-[100%] relative justify-between">
+			<div class="flex flex-col items-center justify-center p-0 m-0 relative">
+				<button type="button" class="flex flex-col leading-[36px] min-h-[42px] max-h-[42px] h-[42px] max-w-[42px] w-[42px] items-center justify-center" @click="() => { proxy.sidebar = !proxy.sidebar; $emit('sidebarButton', proxy.sidebar) }">
+					<div class="flex flex-col items-center justify-center">
+						<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" role="img" class="inline-flex select-none pointer-events-none text-white transition-all duration-300" viewBox="0,0,256.00027,255.99979" width="28px" height="28px" fill-rule="nonzero" v-if="false === proxy.sidebar"><g fill="currentColor" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform="scale(5.12,5.12)"><path d="M5,8c-0.72127,-0.0102 -1.39216,0.36875 -1.75578,0.99175c-0.36361,0.623 -0.36361,1.39351 0,2.01651c0.36361,0.623 1.0345,1.00195 1.75578,0.99175h40c0.72127,0.0102 1.39216,-0.36875 1.75578,-0.99175c0.36361,-0.623 0.36361,-1.39351 0,-2.01651c-0.36361,-0.623 -1.0345,-1.00195 -1.75578,-0.99175zM5,23c-0.72127,-0.0102 -1.39216,0.36875 -1.75578,0.99175c-0.36361,0.623 -0.36361,1.39351 0,2.01651c0.36361,0.623 1.0345,1.00195 1.75578,0.99175h40c0.72127,0.0102 1.39216,-0.36875 1.75578,-0.99175c0.36361,-0.623 0.36361,-1.39351 0,-2.01651c-0.36361,-0.623 -1.0345,-1.00195 -1.75578,-0.99175zM5,38c-0.72127,-0.0102 -1.39216,0.36875 -1.75578,0.99175c-0.36361,0.623 -0.36361,1.39351 0,2.01651c0.36361,0.623 1.0345,1.00195 1.75578,0.99175h40c0.72127,0.0102 1.39216,-0.36875 1.75578,-0.99175c0.36361,-0.623 0.36361,-1.39351 0,-2.01651c-0.36361,-0.623 -1.0345,-1.00195 -1.75578,-0.99175z"></path></g></g></svg>
+						<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" role="img" class="inline-flex select-none pointer-events-none text-white transition-all duration-300" viewBox="0,0,256.00018,255.99963" width="28px" height="28px" fill-rule="nonzero" v-else><g fill="currentColor" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none"><g transform="scale(5.12,5.12)"><path d="M7.71875,6.28125l-1.4375,1.4375l17.28125,17.28125l-17.28125,17.28125l1.4375,1.4375l17.28125,-17.28125l17.28125,17.28125l1.4375,-1.4375l-17.28125,-17.28125l17.28125,-17.28125l-1.4375,-1.4375l-17.28125,17.28125z"></path></g></g></svg>
+					</div>
+				</button>
+			</div>
 			<div class="flex flex-col align-center justify-center p-0 m-0 relative">
 				<div role="banner">
 					<Link href="/" class="inline-flex align-center p-0 m-0 font-motify font-semibold tracking-wide uppercase text-xl leading-9 w-auto text-gray-50 transition-colors ease-in-out duration-300 hover:text-gray-300">
@@ -8,39 +16,12 @@
 					</Link>
 				</div>
 			</div>
-			<div class="flex flex-col items-center justify-center p-0 m-0 relative">
-				<button type="button" class="flex flex-col leading-[36px] min-h-[42px] max-h-[42px] h-[42px] max-w-[42px] w-[42px] items-center justify-center" v-on:click="handleMobileMenu">
-					<div class="flex flex-col items-center justify-center">
-						<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" role="img" class="inline-flex select-none pointer-events-none text-white transition-all duration-300" viewBox="0,0,256.00027,255.99979" width="28px" height="28px" fill-rule="nonzero" v-if="false === proxy.mobileMenu"><g fill="currentColor" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><g transform="scale(5.12,5.12)"><path d="M5,8c-0.72127,-0.0102 -1.39216,0.36875 -1.75578,0.99175c-0.36361,0.623 -0.36361,1.39351 0,2.01651c0.36361,0.623 1.0345,1.00195 1.75578,0.99175h40c0.72127,0.0102 1.39216,-0.36875 1.75578,-0.99175c0.36361,-0.623 0.36361,-1.39351 0,-2.01651c-0.36361,-0.623 -1.0345,-1.00195 -1.75578,-0.99175zM5,23c-0.72127,-0.0102 -1.39216,0.36875 -1.75578,0.99175c-0.36361,0.623 -0.36361,1.39351 0,2.01651c0.36361,0.623 1.0345,1.00195 1.75578,0.99175h40c0.72127,0.0102 1.39216,-0.36875 1.75578,-0.99175c0.36361,-0.623 0.36361,-1.39351 0,-2.01651c-0.36361,-0.623 -1.0345,-1.00195 -1.75578,-0.99175zM5,38c-0.72127,-0.0102 -1.39216,0.36875 -1.75578,0.99175c-0.36361,0.623 -0.36361,1.39351 0,2.01651c0.36361,0.623 1.0345,1.00195 1.75578,0.99175h40c0.72127,0.0102 1.39216,-0.36875 1.75578,-0.99175c0.36361,-0.623 0.36361,-1.39351 0,-2.01651c-0.36361,-0.623 -1.0345,-1.00195 -1.75578,-0.99175z"></path></g></g></svg>
-						<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" role="img" class="inline-flex select-none pointer-events-none text-white transition-all duration-300" viewBox="0,0,256.00018,255.99963" width="28px" height="28px" fill-rule="nonzero" v-else><g fill="currentColor" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none"><g transform="scale(5.12,5.12)"><path d="M7.71875,6.28125l-1.4375,1.4375l17.28125,17.28125l-17.28125,17.28125l1.4375,1.4375l17.28125,-17.28125l17.28125,17.28125l1.4375,-1.4375l-17.28125,-17.28125l17.28125,-17.28125l-1.4375,-1.4375l-17.28125,17.28125z"></path></g></g></svg>
-					</div>
-				</button>
-			</div>
-		</div>
-		<div class="flex flex-col w-full bg-theme-primary-500 absolute motify-mobile-menu-animation left-0 top-[100%]" :class="(proxy.mobileMenu !== false) ? 'max-h-[399px]' : 'max-h-[0px]'" :aria-hidden="false === proxy.mobileMenu">
-			<ul role="list" class="flex flex-col list-none motify-mobile-menu-animation relative" :class="(proxy.mobileMenu !== false) ? 'max-h-[399px]' : 'max-h-[0px]'" :aria-hidden="false === proxy.mobileMenu">
-				<li class="flex flex-col w-full min-h-[20px] relative">
-					<Link href="/" class="flex flex-col w-full text-[18px] leading-[20px] align-center p-0 m-0 text-md text-gray-50 transition-colors ease-in-out duration-300 hover:text-gray-300 px-[20px] py-[12px]" :class="(!proxy.mobileMenu) ? 'invisible' : ''" :aria-hidden="false === proxy.mobileMenu">Home</Link>
-				</li>
-				<li class="flex flex-col w-full min-h-[20px] relative">
-					<Link href="/" class="flex flex-col w-full text-[18px] leading-[20px] align-center p-0 m-0 text-md text-gray-50 transition-colors ease-in-out duration-300 hover:text-gray-300 px-[20px] py-[12px]" :class="(!proxy.mobileMenu) ? 'invisible' : ''" :aria-hidden="false === proxy.mobileMenu">Services</Link>
-				</li>
-				<li class="flex flex-col w-full min-h-[20px] relative">
-					<Link href="/" class="flex flex-col w-full text-[18px] leading-[20px] align-center p-0 m-0 text-md text-gray-50 transition-colors ease-in-out duration-300 hover:text-gray-300 px-[20px] py-[12px]" :class="(!proxy.mobileMenu) ? 'invisible' : ''" :aria-hidden="false === proxy.mobileMenu">Contacts</Link>
-				</li>
-				<li class="flex flex-col w-full min-h-[20px] relative">
-					<Link href="/clientarea/login" class="flex flex-col w-full text-[18px] leading-[20px] align-center p-0 m-0 text-md text-gray-50 transition-colors ease-in-out duration-300 hover:text-gray-300 px-[20px] py-[12px]" :class="(!proxy.mobileMenu) ? 'invisible' : ''" :aria-hidden="false === proxy.mobileMenu">Login</Link>
-				</li>
-				<li class="flex flex-col w-full min-h-[20px] relative">
-					<Link href="/clientarea/register" class="flex flex-col w-full text-[18px] leading-[20px] align-center p-0 m-0 text-md text-gray-50 transition-colors ease-in-out duration-300 hover:text-gray-300 px-[20px] py-[12px]" :class="(!proxy.mobileMenu) ? 'invisible' : ''" :aria-hidden="false === proxy.mobileMenu">Sign Up</Link>
-				</li>
-			</ul>
 		</div>
 	</header>
 
 
-	<header class="motify-header flex flex-col max-w-[100%] w-full bg-theme-primary-500 min-h-[72px] max-h-[72px] h-[100%] transition-all duration-300 ease-in-out p-0 m-0 fixed z-[10]" :class="proxy.scrollY > 72 ? 'motify-header-shadow' : ''" v-else>
-		<div class="flex flex-row w-full m-0 py-[16px] px-[100px] max-h-[72px] min-h-[72px] h-[100%] relative justify-between">
+	<header class="motify-header flex flex-col max-w-[100%] items-center w-full bg-theme-primary-500 min-h-[52px] max-h-[52px] h-[100%] transition-all duration-300 ease-in-out p-0 m-0 fixed z-[10]" :class="proxy.scrollY > 72 ? 'motify-header-shadow' : ''" v-else>
+		<div class="flex flex-row max-w-[1440px] w-full m-0 py-[16px] px-[100px] max-h-[52px] min-h-[52px] h-[100%] relative justify-between">
 			<div class="flex flex-col align-center justify-center w-8/12 p-0 m-0 relative">
 				<div role="banner">
 					<Link href="/" class="inline-flex align-center p-0 m-0 font-motify font-semibold tracking-wide uppercase text-xl leading-9 w-auto text-gray-50 transition-colors ease-in-out duration-300 hover:text-gray-300">
@@ -48,47 +29,9 @@
 					</Link>
 				</div>
 			</div>
-			<div class="flex flex-col align-center justify-center w-8/12 p-0 m-0 relative">
-				<nav class="flex flex-col w-full m-0 p-0">
-					<ul class="flex flex-row space-x-10 w-full list-none font-motify">
-						<li class="flex flex-col">
-							<Link href="/" class="inline-flex align-center p-0 m-0 text-md font-bold text-gray-50 transition-colors ease-in-out duration-300 hover:text-gray-300">
-								Home
-							</Link>
-						</li>
-						<li class="flex flex-col">
-							<Link href="/" class="inline-flex align-center p-0 m-0 text-md font-bold text-gray-50 transition-colors ease-in-out duration-300 hover:text-gray-300">
-								Services
-							</Link>
-						</li>
-						<li class="flex flex-col">
-							<Link href="/" class="inline-flex align-center p-0 m-0 text-md font-bold text-gray-50 transition-colors ease-in-out duration-300 hover:text-gray-300">
-								Contact
-							</Link>
-						</li>
-					</ul>
-				</nav>
-			</div>
 			<div class="flex flex-col items-end justify-center w-2/12 p-0 m-0 relative">
 				<div class="flex flex-col items-end	w-full m-0 p-0 float-right">
-					<ul class="flex flex-row space-x-10 w-full list-none font-motify items-center" v-show="proxy.user.guest">
-						<li class="flex flex-col">
-							<Link href="/clientarea/login" class="inline-flex align-center p-0 m-0 text-md font-bold text-gray-50 transition-colors ease-in-out duration-300 hover:text-gray-300">
-								Login
-							</Link>
-						</li>
-						<li class="flex flex-col">
-							<Link href="/clientarea/register" class="flex flex-col align-center p-0 m-0 capitalize transition-colors ease-in-out duration-300 hover:text-gray-300">
-								<button
-									class="flex flex-col whitespace-nowrap py-[13px] px-[24px] text-[16px] font-bold leading-[14px] rounded-2xl transition-all ease-in-out duration-300 bg-theme-highlight-500 text-theme-primary-500 hover:bg-theme-highlight-400 hover:text-theme-primary-600"
-									type="button"
-								>
-									Sign Up
-								</button>
-							</Link>
-						</li>
-					</ul>
-					<ul class="flex flex-row space-x-10 w-full list-none font-motify items-center" v-show="!proxy.user.guest">
+					<ul class="flex flex-row space-x-10 w-full list-none font-motify items-center">
 						<li class="flex flex-col relative min-w-[160px]" ref="refUserMenu">
 							<div class="flex flex-col w-full relative">
 								<span class="inline-block w-full" aria-expanded="false" aria-haspopup="listbox" role="combobox">
@@ -120,9 +63,9 @@
 		</div>
 	</header>
 	<div class="fixed max-w-[100%] w-full min-h-screen max-h-screen h-screen transition-all duration-300 z-[7996]" v-if="!proxy.userMenu.hidden" @click="proxy.userMenu.hidden = !proxy.userMenu.hidden">
-		<div class="flex flex-col p-[4px] max-w-[220px] w-full rounded-[8px] bg-theme-primary-700 motify-listbox-shadow fixed max-h-screen z-[7998]" :style="`left: ${(proxy.userMenu.pos.x - 20)}px; top: 72px;`" aria-orientation="vertical" role="listbox">
+		<div class="flex flex-col p-[4px] max-w-[220px] w-full rounded-[8px] bg-theme-primary-700 motify-listbox-shadow fixed max-h-screen z-[7998]" :style="`left: ${(proxy.userMenu.pos.x - 10)}px; top: 56px;`" aria-orientation="vertical" role="listbox">
 			<div class="flex flex-col w-full bg-transparent justify-center cursor-pointer items-center gap-[8px] no-underline rounded-[8px] m-0 p-0" role="option">
-				<Link  href="/clientarea/account" class="flex flex-row items-start justify-start cursor-pointer select-none gap-[8px] whitespace-pre-wrap p-[8px] w-full font-motify text-white transition-colors duration-300 leading-[18px] text-[12px] md:leading-[22px] md:text-[14px] hover:text-white/75">
+				<Link class="flex flex-row items-start justify-start cursor-pointer select-none gap-[8px] whitespace-pre-wrap p-[8px] w-full font-motify text-white transition-colors duration-300 leading-[18px] text-[12px] md:leading-[22px] md:text-[14px] hover:text-white/75">
 					<div class="flex flex-col select-none pointer-events-none">
 						<svg aria-hidden="true" role="img" class="flex flex-col select-none pointer-events-none w-full max-h-[24px] max-w-[100%] px-0 py-[2px]" width="24px" height="24px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><g><path fill="none" d="M0 0h24v24H0z"/><path d="M12 14v2a6 6 0 0 0-6 6H4a8 8 0 0 1 8-8zm0-1c-3.315 0-6-2.685-6-6s2.685-6 6-6 6 2.685 6 6-2.685 6-6 6zm0-2c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm2.595 7.812a3.51 3.51 0 0 1 0-1.623l-.992-.573 1-1.732.992.573A3.496 3.496 0 0 1 17 14.645V13.5h2v1.145c.532.158 1.012.44 1.405.812l.992-.573 1 1.732-.992.573a3.51 3.51 0 0 1 0 1.622l.992.573-1 1.732-.992-.573a3.496 3.496 0 0 1-1.405.812V22.5h-2v-1.145a3.496 3.496 0 0 1-1.405-.812l-.992.573-1-1.732.992-.572zM18 19.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/></g></svg>
 					</div>
@@ -159,6 +102,8 @@
 	import { reactive, onMounted, ref, nextTick } from 'vue';
 	import { Link } from '@inertiajs/vue3';
 
+	defineEmits(['click:sidebarButton']);
+
 	const props = defineProps({
 		user: Object
 	}),
@@ -178,7 +123,7 @@
 			hidden	:	true
 		},
 		scrollY		:	0,
-		mobileMenu	:	false,
+		sidebar		:	false,
 		user		:	{
 			guest		:	true,
 			id			:	null,
@@ -188,7 +133,7 @@
 		}
 	}),
 
-	handleResize = (event) => {
+	handleResize = async(event) => {
 		if ('screen' in window && null !== window.screen && 'object' === typeof window.screen) {
 			if ('width' in window.screen && null !== window.screen.width && 'number' === typeof window.screen.width) {
 				proxy.window.width = window.screen.width;
@@ -198,16 +143,15 @@
 				proxy.window.height = window.screen.height;
 			}
 		}
+		await nextTick().then(async() => {
+			calculateUserMenuPosition();
+		});
 	},
 	
 	handleScroll = (event) => {
 		if ('scrollY' in window && null !== window.scrollY && 'number' === typeof window.scrollY) {
 			proxy.scrollY = window.scrollY;
 		}
-	},
-	
-	handleMobileMenu = () => {
-		proxy.mobileMenu = !proxy.mobileMenu;
 	},
 
 	cacheUserData = () => {

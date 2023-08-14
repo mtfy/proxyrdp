@@ -1,5 +1,5 @@
 <template>
-	<GuestLayout>
+	<MainLayout :user="props.user">
 		<Landing />
 		<div class="bg-white flex flex-col justify-center relative max-w-[100%] w-full py-[48px] md:py-[72px] m-0">
 			<div class="motify-container relative w-full max-w-[100%] p-0 m-0 pt-5">
@@ -227,10 +227,56 @@
 				</div>
 			</div>
 		</div>
-	</GuestLayout>
+		<div class="bg-theme-primary-500 flex flex-col justify-center relative max-w-[100%] w-full p-0 px-[36px] py-[32px] md:py-0 md:px-0 pb-[48px] md:pb-[72px] m-0 leading-[21px]">
+			<svg class="hidden w-full md:block relative leading-[21px] lg:leading-[24px] lg:h-[96px] z-[0] overflow-hidden align-middle bottom-[1px]" preserveAspectRatio="none" viewBox="0 0 100 100"><polygon fill="#FFFFFF" points="0 0 100 0 100 100"></polygon></svg>
+			<div class="motify-container relative w-full max-w-[100%] p-0 m-0 px-[12px] lg:py-[120px]">
+				<div class="flex flex-col justify-center items-center flex-wrap w-full p-0 m-0">
+					<span class="inline-flex text-white font-motify font-bold whitespace-pre-wrap text-[28px] leading-[35px] md:text-[40px] md:leading-[42px]">Are you convinced?</span>
+					<div class="relative m-0 p-0 relative mt-[16px] md:mt-[32px]">
+						<Link href="/clientarea/register" class="inline-flex select-none cursor-pointer p-0 m-0">
+							<Button :type="'button'" :custom-class="'py-[15px] px-[33px] mx-auto md:m-0 bg-theme-highlight-500 text-theme-primary-500 hover:bg-theme-highlight-400 hover:text-theme-primary-600'">Sign Up</Button>
+						</Link>
+					</div>
+				</div>
+			</div>
+		</div>
+	</MainLayout>
 </template>
 
 <script setup>
-	import GuestLayout from '../Layouts/GuestLayout.vue';
+	import MainLayout from '../Layouts/MainLayout.vue';
 	import Landing from '../Components/Landing.vue';
+	import Button from '../Components/Button.vue';
+	import { Link } from '@inertiajs/vue3'
+	
+	import Swal from 'sweetalert2/dist/sweetalert2.js'
+	import 'sweetalert2/dist/sweetalert2.min.css';
+	import { nextTick, reactive, onMounted } from 'vue';
+
+	const props = defineProps({
+		user: Object
+	}),
+
+	proxy = reactive({
+		user		:	{
+			guest		:	true,
+			id			:	null,
+			first_name	:	null,
+			last_name	:	null,
+			email		:	null
+		}
+	}),
+	cacheUserData = async() => {
+		if ('user' in props && 'object' === typeof props.user && null !== props.user && Object.entries(props.user).length > 0) {
+			proxy.user.guest = props.user.guest;
+			proxy.user.id = props.user.id;
+			proxy.user.first_name = props.user.first_name;
+			proxy.user.last_name = props.user.last_name;
+			proxy.user.email = props.user.email;
+		}
+	};
+
+	onMounted(async() => {
+		cacheUserData();
+	});
 </script>

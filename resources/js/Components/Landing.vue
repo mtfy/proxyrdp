@@ -15,7 +15,7 @@
 						</span>
 					</div>
 					<div class="relative m-0 p-0 relative mt-[36px]">
-						<Button :custom-class="'py-[17px] px-[43px] mx-auto md:m-0'">
+						<Button :type="'button'" :custom-class="' py-[17px] px-[43px] mx-auto md:m-0 bg-theme-highlight-500 text-theme-primary-500 hover:bg-theme-highlight-400 hover:text-theme-primary-600'">
 							Order Now
 						</Button>
 					</div>

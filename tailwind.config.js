@@ -59,15 +59,20 @@ export default {
 						900: '#40344C',
 					},
 					background: {
+						paper: '#F2F4F9',
 						alt: '#FCFCFC'
 					},
 					foreground: {
-						alt: '#e8e8e8'
+						alt: '#e8e8e8',
+						clientarea: {
+							lightgrey: '#5A6372'
+						}
 					}
 				}
 			},
 
 			screens: {
+				'override': '1px',
 				'3xl': '2048px'
 			},
 

@@ -71,7 +71,7 @@
 										<Link href="/clientarea/login/recover" class="flex flex-col w-full lg:w-auto justify-center items-center select-none cursor-pointer no-underline transition-all duration-300">
 											<Button :type="'button'" :custom-class="'override:text-[13px] rounded-[4px] bg-theme-secondary-500 text-white w-full capitalize text-center font-medium justify-center items-center hover:bg-theme-secondary-700 hover:text-[#F5F5F5]'">
 												<div class="flex flex-row w-full items-center justify-center space-x-2 leading-[18px]">
-													<div class="flex flex-col"><svg xmlns="http://www.w3.org/2000/svg" role="img" width="16px 	" height="16px" fill="currentColor" class="flex flex-col select-none pointer-events-none" viewBox="0 0 16 16"><path d="M11 1a2 2 0 0 0-2 2v4a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5V3a3 3 0 0 1 6 0v4a.5.5 0 0 1-1 0V3a2 2 0 0 0-2-2zM3 8a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1H3z"/></svg></div>
+													<div class="flex flex-col"><svg xmlns="http://www.w3.org/2000/svg" role="img" width="16px" height="16px" fill="currentColor" class="flex flex-col select-none pointer-events-none" viewBox="0 0 16 16"><path d="M11 1a2 2 0 0 0-2 2v4a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2h5V3a3 3 0 0 1 6 0v4a.5.5 0 0 1-1 0V3a2 2 0 0 0-2-2zM3 8a1 1 0 0 0-1 1v5a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V9a1 1 0 0 0-1-1H3z"/></svg></div>
 													<div class="flex flex-col">Forgot password</div>
 												</div>
 											</Button>

@@ -31,12 +31,14 @@ class ClientController extends Controller
 			'email' => NULL
 		];
 		$user = request()->user();
+
 		if (!\is_null($user)) {
 			$data['guest'] = false;
 			$data['id'] = $user['id'];
 			$data['first_name'] = $user['first_name'];
 			$data['last_name'] = $user['last_name'];
 			$data['email'] = $user['email'];
+			$data['created_at'] = $user['created_at']->setTimezone(new \DateTimeZone('UTC'))->getTimestamp();
 		}
 
 		return $data;

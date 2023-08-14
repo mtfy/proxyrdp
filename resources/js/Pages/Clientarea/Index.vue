@@ -9,7 +9,7 @@
 		<div class="flex flex-col w-full relative p-0 m-0 mt-[28px]">
 			<div class="flex flex-col w-full relative">
 				<div class="grid grid-cols-1 md:grid-cols-3 relative gap-2">
-					<Link href="/clientarea/servers" class="flex flex-col group w-full py-[12px] px-[20px] rounded-[4px] relative transition-colors duration-300 bg-[#FFFFFF] hover:bg-[#F2F4F920] border-[1px] border-[#D1D9E4] hover:border-[#0A0A0A75]">
+					<Link href="/clientarea/servers" class="flex flex-col group w-full py-[12px] px-[20px] rounded-[4px] relative transition-colors duration-300 bg-[#FFFFFF] hover:bg-[#F2F4F920] border-[1px] border-[#D1D9E4] group-hover:border-[#DDDDDD]">
 						<div class="flex flex-col w-full relative">
 							<div class="flex flex-col w-full relative">
 								<div class="flex flex-row w-full relative">
@@ -26,7 +26,7 @@
 							</div>
 						</div>
 					</Link>
-					<Link href="/clientarea/proxies" class="flex flex-col group w-full py-[12px] px-[20px] rounded-[4px] relative transition-colors duration-300 bg-[#FFFFFF] hover:bg-[#F2F4F920] border-[1px] border-[#D1D9E4] hover:border-[#0A0A0A75]">
+					<Link href="/clientarea/proxies" class="flex flex-col group w-full py-[12px] px-[20px] rounded-[4px] relative transition-colors duration-300 bg-[#FFFFFF] hover:bg-[#F2F4F920] border-[1px] border-[#D1D9E4] group-hover:border-[#DDDDDD]">
 						<div class="flex flex-col w-full relative">
 							<div class="flex flex-col w-full relative">
 								<div class="flex flex-row w-full relative">
@@ -43,7 +43,7 @@
 							</div>
 						</div>
 					</Link>
-					<Link href="/clientarea/invoices" class="flex flex-col group w-full py-[12px] px-[20px] rounded-[4px] relative transition-colors duration-300 bg-[#FFFFFF] hover:bg-[#F2F4F920] border-[1px] border-[#D1D9E4] hover:border-[#0A0A0A75]">
+					<Link href="/clientarea/invoices" class="flex flex-col group w-full py-[12px] px-[20px] rounded-[4px] relative transition-colors duration-300 bg-[#FFFFFF] hover:bg-[#F2F4F920] border-[1px] border-[#D1D9E4] group-hover:border-[#DDDDDD]">
 						<div class="flex flex-col w-full relative">
 							<div class="flex flex-col w-full relative">
 								<div class="flex flex-row w-full relative">
@@ -61,6 +61,33 @@
 						</div>
 					</Link>
 				</div>
+			</div>
+		</div>
+		<div class="flex flex-col w-full relative bg-white border border-[#D1D9E4] rounded-xl p-[24px] m-0 mt-[20px] space-y-[20px]">
+			<div class="flex flex-col w-full p-0 m-0">
+				<span class="flex flex-col font-medium whitespace-pre-wrap text-[18px] leading-[28px] capitalize">Account overview</span>
+			</div>
+			<div class="flex flex-col w-full">
+				<table class="table-auto text-left font-motify leading-loose text-[14px] md:text-[16px] lg:max-w-[50%]">
+					<tbody>
+						<tr>
+							<th scope="col">Created</th>
+							<td class="whitespace-no-wrap">{{ formatDate(proxy.user.created_at) }}</td>
+						</tr>
+						<tr>
+							<th scope="col">First name</th>
+							<td class="whitespace-no-wrap">{{ proxy.user.first_name }}</td>
+						</tr>
+						<tr>
+							<th scope="col">First name</th>
+							<td class="whitespace-no-wrap">{{ proxy.user.last_name }}</td>
+						</tr>
+						<tr>
+							<th scope="col">Email</th>
+							<td class="whitespace-no-wrap">{{ proxy.user.email }}</td>
+						</tr>
+					</tbody>
+				</table>
 			</div>
 		</div>
 	</ClientLayout>
@@ -83,7 +110,8 @@
 			id			:	null,
 			first_name	:	null,
 			last_name	:	null,
-			email		:	null
+			email		:	null,
+			created_at	:	null
 		}
 	}),
 
@@ -125,6 +153,12 @@
 			}
 		}
 	},
+
+	formatDate = (date) => {
+		var d = new Date(0);
+		d.setUTCSeconds(parseInt(date) || 0);
+		return (`${d.toLocaleDateString()} ${d.toLocaleTimeString()}`);
+	},
 	
 	cacheUserData = async() => {
 		if ('user' in props && 'object' === typeof props.user && null !== props.user && Object.entries(props.user).length > 0) {
@@ -133,6 +167,7 @@
 			proxy.user.first_name = props.user.first_name;
 			proxy.user.last_name = props.user.last_name;
 			proxy.user.email = props.user.email;
+			proxy.user.created_at = props.user.created_at;
 		}
 	};
 

@@ -17,7 +17,8 @@
 			id			:	null,
 			first_name	:	null,
 			last_name	:	null,
-			email		:	null
+			email		:	null,
+			created_at	:	null
 		}
 	}),
 	
@@ -28,6 +29,7 @@
 			proxy.user.first_name = props.user.first_name;
 			proxy.user.last_name = props.user.last_name;
 			proxy.user.email = props.user.email;
+			proxy.user.created_at = props.user.created_at;
 		}
 	};
 

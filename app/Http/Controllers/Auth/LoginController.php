@@ -21,9 +21,7 @@ class LoginController extends Controller
      */
     public function create() : Response
 	{
-		return Inertia::render('Auth/Login', [
-			'user' => ClientController::getUserData()
-		]);
+		return Inertia::render('Auth/Login');
 	}
 
 	/**

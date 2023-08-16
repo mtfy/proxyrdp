@@ -88,8 +88,8 @@
 </template>
 
 <script setup>
-	import { useForm, Link } from '@inertiajs/vue3';
-	import { reactive } from 'vue'
+	import { useForm, usePage, Link } from '@inertiajs/vue3';
+	import { reactive, computed } from 'vue'
 	import MainLayout from '../../Layouts/MainLayout.vue';
 	import Button from '../../Components/Button.vue';
 	import Input from '../../Components/Input.vue';
@@ -98,9 +98,10 @@
 	import 'sweetalert2/dist/sweetalert2.min.css';
 
 	const props = defineProps({
-		errors: Object,
-		user: Object
+		errors: Object
 	}),
+	page = usePage(),
+	user = computed(() => page.props.user),
 	Toast = Swal.mixin({
 		toast: true,
 		position: 'top-right',

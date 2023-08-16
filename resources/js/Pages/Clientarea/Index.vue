@@ -1,7 +1,7 @@
 <template>
-	<ClientLayout :user="props.user" :activePage="0">
+	<ClientLayout :user="user" :activePage="0">
 		<div class="flex flex-col w-full p-0 m-0">
-			<span class="flex flex-col font-medium whitespace-pre-wrap text-[20px] leading-[24px] capitalize">Hello, {{ proxy.user.first_name }}!</span>
+			<span class="flex flex-col font-medium whitespace-pre-wrap text-[20px] leading-[24px] capitalize">Hello, {{ user.first_name }}!</span>
 		</div>
 		<div class="flex flex-col w-full p-0 m-0 mt-[8px]">
 			<span class="flex flex-col text-[14px] leading-[22px] text-theme-primary-foreground-clientarea-alt">Welcome to your clientarea. Let&#x2019;s get started!</span>
@@ -72,19 +72,19 @@
 					<tbody>
 						<tr>
 							<th scope="col">Created</th>
-							<td class="whitespace-no-wrap">{{ formatDate(proxy.user.created_at) }}</td>
+							<td class="whitespace-no-wrap">{{ formatDate(user.created_at) }}</td>
 						</tr>
 						<tr>
 							<th scope="col">First name</th>
-							<td class="whitespace-no-wrap">{{ proxy.user.first_name }}</td>
+							<td class="whitespace-no-wrap">{{ user.first_name }}</td>
 						</tr>
 						<tr>
 							<th scope="col">First name</th>
-							<td class="whitespace-no-wrap">{{ proxy.user.last_name }}</td>
+							<td class="whitespace-no-wrap">{{ user.last_name }}</td>
 						</tr>
 						<tr>
 							<th scope="col">Email</th>
-							<td class="whitespace-no-wrap">{{ proxy.user.email }}</td>
+							<td class="whitespace-no-wrap">{{ user.email }}</td>
 						</tr>
 					</tbody>
 				</table>
@@ -95,25 +95,18 @@
 <script setup>
 	import Button from '../../Components/Button.vue';
 	import ClientLayout from '../../Layouts/ClientLayout.vue';
-	import { reactive, onMounted, nextTick } from 'vue';
-	import { Link } from '@inertiajs/vue3';
+	import { reactive, computed, onMounted, nextTick } from 'vue';
+	import { Link, usePage } from '@inertiajs/vue3';
 	import Swal from 'sweetalert2/dist/sweetalert2.js'
 	import 'sweetalert2/dist/sweetalert2.min.css';
 
 	const props = defineProps({
 		user: Object
 	}),
+	page = usePage(),
+	user = computed(() => page.props.user),
 
-	proxy = reactive({
-		user		:	{
-			guest		:	true,
-			id			:	null,
-			first_name	:	null,
-			last_name	:	null,
-			email		:	null,
-			created_at	:	null
-		}
-	}),
+	proxy = reactive({}),
 
 	Toast = Swal.mixin({
 		toast: true,
@@ -128,7 +121,7 @@
 	}),
 
 	showLoginAlert = async() => {
-		if (proxy.user.guest) {
+		if (user.guest) {
 			return;
 		}
 
@@ -148,7 +141,7 @@
 				await Toast.fire({
 					icon: 'success',
 					title: 'Success',
-					text: `Welcome back, ${proxy.user.first_name}!`
+					text: `Welcome back, ${user.first_name}!`
 				});
 			}
 		}
@@ -158,24 +151,11 @@
 		var d = new Date(0);
 		d.setUTCSeconds(parseInt(date) || 0);
 		return (`${d.toLocaleDateString()} ${d.toLocaleTimeString()}`);
-	},
-	
-	cacheUserData = async() => {
-		if ('user' in props && 'object' === typeof props.user && null !== props.user && Object.entries(props.user).length > 0) {
-			proxy.user.guest = props.user.guest;
-			proxy.user.id = props.user.id;
-			proxy.user.first_name = props.user.first_name;
-			proxy.user.last_name = props.user.last_name;
-			proxy.user.email = props.user.email;
-			proxy.user.created_at = props.user.created_at;
-		}
 	};
 
 	onMounted(async() => {
-		await cacheUserData().then(async() => {
-			await nextTick(async() => {
-				await showLoginAlert();
-			});
+		await nextTick(async() => {
+			await showLoginAlert();
 		});
 	});
 </script>

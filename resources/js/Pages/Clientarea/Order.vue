@@ -1,5 +1,5 @@
 <template>
-	<ClientLayout :user="props.user" :activePage="1">
+	<ClientLayout :user="user" :activePage="1">
 		<div class="flex flex-col w-full p-0 m-0">
 			<span class="flex flex-col font-medium whitespace-pre-wrap text-[20px] leading-[24px] capitalize">Order</span>
 		</div>
@@ -221,15 +221,13 @@
 </template>
 <script setup>
 	import ClientLayout from '../../Layouts/ClientLayout.vue';
-	import { reactive, onMounted, nextTick } from 'vue';
-	import { useForm } from '@inertiajs/vue3';
+	import { reactive, onMounted, computed, nextTick } from 'vue';
+	import { useForm, usePage } from '@inertiajs/vue3';
 	import Button from '../../Components/Button.vue';
 	import Swal from 'sweetalert2/dist/sweetalert2.js'
 	import 'sweetalert2/dist/sweetalert2.min.css';
 
-	const props = defineProps({
-		user: Object
-	}),
+	const props = defineProps({}),
 
 	Toast = Swal.mixin({
 		toast: true,
@@ -242,16 +240,10 @@
 		timer: 4000,
 		timerProgressBar: true
 	}),
+	page = usePage(),
+	user = computed(() => page.props.user),
 
 	proxy = reactive({
-		user		:	{
-			guest		:	true,
-			id			:	null,
-			first_name	:	null,
-			last_name	:	null,
-			email		:	null,
-			created_at	:	null
-		},
 		subtotal		:	{
 			servers		:	12.00
 		},
@@ -432,19 +424,43 @@
 			}
 		});
 	},
-	
-	cacheUserData = async() => {
-		if ('user' in props && 'object' === typeof props.user && null !== props.user && Object.entries(props.user).length > 0) {
-			proxy.user.guest = props.user.guest;
-			proxy.user.id = props.user.id;
-			proxy.user.first_name = props.user.first_name;
-			proxy.user.last_name = props.user.last_name;
-			proxy.user.email = props.user.email;
-			proxy.user.created_at = props.user.created_at;
-		}
+
+	fetchCurrencies = async() => {
+		console.log(user.value.token);
+		return new Promise(async(resolve, reject) => {
+
+			await fetch(`/billing/currencies`, {
+				method : 'GET',
+				credentials: 'same-origin'
+			}).then(async(response) => {
+				return response.text();
+			}).then(async(result) => {
+				try {
+					result = JSON.parse(result);
+				} catch(err) {
+					//window.console.log('Unable to fetch currencies', err);
+					reject(result);
+				}
+
+				if (!result.success) {
+					//window.console.error(`Unable to fetch currencies`, result.message);
+					reject(result);
+				} else {
+					//window.console.log('Successfully fetched currencies', JSON.stringify(result));
+					resolve(result);
+				}
+			});
+
+		});
 	};
 
 	onMounted(async() => {
-		await cacheUserData();
+		await nextTick().then(async() => {
+			await fetchCurrencies().then(async(result) => {
+				//window.console.log(result);
+			}).catch(async(error) => {
+				//window.console.log(error);
+			})
+		});
 	});
 </script>

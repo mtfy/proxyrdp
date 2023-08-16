@@ -5,13 +5,16 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 use Inertia\Response;
+use Illuminate\Support\Facades\Cookie;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Http\RedirectResponse;
+use App\Http\Controllers\Billing\NOWPaymentsController;
 
 class ClientController extends Controller
 {
@@ -28,7 +31,9 @@ class ClientController extends Controller
 			'id' =>	NULL,
 			'first_name' => NULL,
 			'last_name' => NULL,
-			'email' => NULL
+			'email' => NULL,
+			'created_at' => NULL,
+			'token' => NULL
 		];
 		$user = request()->user();
 
@@ -39,6 +44,7 @@ class ClientController extends Controller
 			$data['last_name'] = $user['last_name'];
 			$data['email'] = $user['email'];
 			$data['created_at'] = $user['created_at']->setTimezone(new \DateTimeZone('UTC'))->getTimestamp();
+			$data['token'] = encrypt(Cookie::get('proxyrdp_session'));
 		}
 
 		return $data;
@@ -63,9 +69,7 @@ class ClientController extends Controller
 	 */
 	public function showOrder()
 	{
-		return Inertia::render('Clientarea/Order', [
-			'user' => ClientController::getUserData()
-		]);
+		return Inertia::render('Clientarea/Order');
 	}
 
 
@@ -76,9 +80,7 @@ class ClientController extends Controller
 	 */
 	public function showInvoices()
 	{
-		return Inertia::render('Clientarea/Invoices', [
-			'user' => ClientController::getUserData()
-		]);
+		return Inertia::render('Clientarea/Invoices');
 	}
 	
 
@@ -89,9 +91,7 @@ class ClientController extends Controller
 	 */
 	public function showServers()
 	{
-		return Inertia::render('Clientarea/Servers', [
-			'user' => ClientController::getUserData()
-		]);
+		return Inertia::render('Clientarea/Servers');
 	}
 
 	/**
@@ -101,9 +101,7 @@ class ClientController extends Controller
 	 */
 	public function showProxies()
 	{
-		return Inertia::render('Clientarea/Proxies', [
-			'user' => ClientController::getUserData()
-		]);
+		return Inertia::render('Clientarea/Proxies');
 	}
 
 	/**
@@ -113,9 +111,7 @@ class ClientController extends Controller
 	 */
 	public function showAccount()
 	{
-		return Inertia::render('Clientarea/Account', [
-			'user' => ClientController::getUserData()
-		]);
+		return Inertia::render('Clientarea/Account');
 	}
 
 

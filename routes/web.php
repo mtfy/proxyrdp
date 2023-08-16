@@ -20,9 +20,7 @@ use Inertia\Inertia;
 */
 
 Route::get('/', function () {
-    return Inertia::render('Home', [
-		'user' => ClientController::getUserData()
-	]);
+    return Inertia::render('Home');
 })->name('Home');
 
 Route::middleware('guest')->group(function () {
@@ -78,4 +76,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware(['auth'])->group(function () {
 	Route::get('logout', [LoginController::class, 'destroy'])
 		->name('logout');
+
+	
+	Route::middleware('auth:web')->get('/billing/currencies', function (Request $request) {
+		return \json_encode(['success' => true, 'message' => 'hello']);
+	});
 });

@@ -26,9 +26,7 @@ class RegistrationController extends Controller
      */
     public function create() : Response
 	{
-		return Inertia::render('Auth/Register', [
-			'user' => ClientController::getUserData()
-		]);
+		return Inertia::render('Auth/Register');
 	}
 
 

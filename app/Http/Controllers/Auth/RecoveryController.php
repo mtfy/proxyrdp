@@ -18,9 +18,7 @@ class RecoveryController extends Controller
      */
     public function create() : Response
 	{
-		return Inertia::render('Auth/Recover', [
-			'user' => ClientController::getUserData()
-		]);
+		return Inertia::render('Auth/Recover');
 	}
 
 	/**

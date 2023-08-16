@@ -1,5 +1,5 @@
 <template>
-	<ClientLayout :user="props.user" :activePage="4">
+	<ClientLayout :user="user" :activePage="4">
 		<div class="flex flex-col w-full p-0 m-0">
 			<span class="flex flex-col font-medium whitespace-pre-wrap text-[20px] leading-[24px] capitalize">My account</span>
 		</div>
@@ -67,7 +67,7 @@
 						<form class="flex flex-col w-full relative space-y-[20px]" @submit.prevent="submit('email', 'clientarea.account.email')">
 							<div class="flex flex-col w-full m-0 p-0">
 								<label class="flex flex-col font-motify font-medium w-full capitalize text-slate-950 text-[12px] leading-[18px] md:text-[14px] md:leading-[22px]" for="current_email">Current email address</label>
-								<Input :type="'email'" :modelValue="proxy.user.email" :readOnly="true" :disabled="true" :id="current_email" :maxlength="255" :customClass="'cursor-text'"  />
+								<Input :type="'email'" :modelValue="user.email" :readOnly="true" :disabled="true" :id="current_email" :maxlength="255" :customClass="'cursor-text'"  />
 							</div>
 							<div class="flex flex-col w-full m-0 p-0">
 								<label class="flex flex-col font-motify font-medium w-full capitalize text-slate-950 text-[12px] leading-[18px] md:text-[14px] md:leading-[22px]" for="email_address">New email address</label>
@@ -93,8 +93,8 @@
 	import ClientLayout from '../../Layouts/ClientLayout.vue';
 	import Input from '../../Components/Input.vue';
 	import Button from '../../Components/Button.vue';
-	import { reactive, onMounted } from 'vue';
-	import { useForm } from '@inertiajs/vue3';
+	import { reactive, computed, onMounted } from 'vue';
+	import { useForm, usePage } from '@inertiajs/vue3';
 	import Swal from 'sweetalert2/dist/sweetalert2.js'
 	import 'sweetalert2/dist/sweetalert2.min.css';
 
@@ -102,6 +102,8 @@
 		errors: Object,
 		user: Object
 	}),
+	page = usePage(),
+	user = computed(() => page.props.user),
 
 	Toast = Swal.mixin({
 		toast: true,
@@ -128,13 +130,6 @@
 	},
 
 	proxy = reactive({
-		user		:	{
-			guest		:	true,
-			id			:	null,
-			first_name	:	null,
-			last_name	:	null,
-			email		:	null
-		},
 		hideErrors		:	{
 			password	:	false,
 			email		:	false
@@ -194,19 +189,5 @@
 				});
 			},
 		});
-	},
-	
-	cacheUserData = async() => {
-		if ('user' in props && 'object' === typeof props.user && null !== props.user && Object.entries(props.user).length > 0) {
-			proxy.user.guest = props.user.guest;
-			proxy.user.id = props.user.id;
-			proxy.user.first_name = props.user.first_name;
-			proxy.user.last_name = props.user.last_name;
-			proxy.user.email = props.user.email;
-		}
 	};
-
-	onMounted(async() => {
-		await cacheUserData();
-	});
 </script>

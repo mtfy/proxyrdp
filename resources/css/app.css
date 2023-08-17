@@ -213,6 +213,20 @@ body.motify {
 	height: 100%;
 }
 
+.motify-text-shadow-sm {
+	text-shadow: 1px 1px 3px #00000040;
+}
+
+.motify-table-btn-sm {
+	font-size: 12px !important;
+	padding: 6px 15px !important;
+	display: inline-block !important;
+	width: auto !important;
+	vertical-align: middle !important;
+	display: block !important;
+	margin: 0 auto !important;
+}
+
 @media (max-width: 1700px) {
 	.motify-clientarea-content {
 		padding-bottom: 104px;

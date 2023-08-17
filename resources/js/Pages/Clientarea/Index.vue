@@ -71,6 +71,10 @@
 				<table class="table-auto text-left font-motify leading-loose text-[14px] md:text-[16px] lg:max-w-[50%]">
 					<tbody>
 						<tr>
+							<th scope="col">ID</th>
+							<td class="whitespace-no-wrap">{{ user.id }}</td>
+						</tr>
+						<tr>
 							<th scope="col">Created</th>
 							<td class="whitespace-no-wrap">{{ formatDate(user.created_at) }}</td>
 						</tr>
@@ -100,9 +104,7 @@
 	import Swal from 'sweetalert2/dist/sweetalert2.js'
 	import 'sweetalert2/dist/sweetalert2.min.css';
 
-	const props = defineProps({
-		user: Object
-	}),
+	const props = defineProps({}),
 	page = usePage(),
 	user = computed(() => page.props.user),
 

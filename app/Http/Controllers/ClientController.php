@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Helpers\Helpers;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Support\Facades\Cookie;
 use App\Models\User;
+use App\Models\Invoice;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\RateLimiter;
@@ -15,6 +17,7 @@ use Illuminate\Validation\Rules;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Controllers\Billing\NOWPaymentsController;
+use App\Http\Controllers\Billing\PaymentController;
 
 class ClientController extends Controller
 {
@@ -57,9 +60,7 @@ class ClientController extends Controller
 	 */
 	public function showIndex()
 	{
-		return Inertia::render('Clientarea/Index', [
-			'user' => ClientController::getUserData()
-		]);
+		return Inertia::render('Clientarea/Index');
 	}
 
 	/**
@@ -80,7 +81,83 @@ class ClientController extends Controller
 	 */
 	public function showInvoices()
 	{
-		return Inertia::render('Clientarea/Invoices');
+
+		$invoices = Invoice::select('id', 'invoice_id', 'amount_fiat', 'service_type', 'status', 'created_at', 'updated_at')->where('user_id', auth()->id())->orderByDesc('created_at')->paginate(15);
+		$items = $invoices->through(function ($invoice) {
+			$paymentController = new PaymentController();
+			return [
+				'invoice_id' => $invoice->invoice_id,
+				'payment_id' => $invoice->id,
+				'amount' => $invoice->amount_fiat,
+				'service' => $invoice->service_type,
+				'status' => $paymentController->getPaymentStatusLabel($invoice->status),
+				'created_at' => $invoice->created_at,
+				'updated_at' => $invoice->updated_at
+			];
+		});
+
+		return Inertia::render('Clientarea/Invoices', [
+			'items'	=>	$items
+		]);
+	}
+
+
+	/**
+	 * Undocumented function
+	 *
+	 * @param  Request $request
+	 * @param  string  $id
+	 * @return array
+	 */
+	public function showInvoice(Request $request, string $id)
+	{
+		$invoice = Invoice::select('id', 'invoice_id', 'amount_fiat', 'service_type', 'status', 'created_at', 'updated_at')
+			->where([
+				'user_id' => auth()->id(),
+				'invoice_id' => $id
+			])
+			->first();
+		
+		if (!\is_null($invoice)) {
+			$paymentController = new PaymentController();
+			$invoice = [
+				'ok'	=>	true,
+				'data'	=>	[
+					'invoice_id' => $invoice->invoice_id,
+					'payment_id' => $invoice->id,
+					'amount' => $invoice->amount_fiat,
+					'service' => $invoice->service_type,
+					'status' => [
+						'id' => \intval($invoice->status),
+						'text' => $paymentController->getPaymentStatusLabel($invoice->status)
+					],
+					'created_at' => $invoice->created_at,
+					'updated_at' => $invoice->updated_at,
+				]
+			];
+		}
+		else
+		{
+			$invoice = [
+				'ok'	=>	false,
+				'data'	=>	[
+					'invoice_id' => NULL,
+					'payment_id' => NULL,
+					'amount' => NULL,
+					'service' => NULL,
+					'status' => [
+						'id' => NULL,
+						'text' => NULL
+					],
+					'created_at' => NULL,
+					'updated_at' => NULL
+				]
+			];
+		}
+
+		return Inertia::render('Clientarea/Invoice', [
+			'invoice' => $invoice
+		]);
 	}
 	
 

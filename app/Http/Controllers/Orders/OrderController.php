@@ -5,9 +5,12 @@ namespace App\Http\Controllers\Orders;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\Billing\NOWPaymentsController;
+use App\Http\Controllers\Billing\PaymentController;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\RateLimiter;
 use App\Models\User;
+use App\Models\Invoice;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -58,7 +61,7 @@ class OrderController extends Controller
 	{
 		$subtotal = (float)0.00;
 
-		if (\count($param) !== 4 || !\array_key_exists('cores', $param) || !\array_key_exists('memory', $param) || !\array_key_exists('storage', $param) || !\array_key_exists('ipv4', $param))
+		if (!\array_key_exists('cores', $param) || !\array_key_exists('memory', $param) || !\array_key_exists('storage', $param) || !\array_key_exists('ipv4', $param))
 			return $subtotal;
 		
 		switch(\intval($param['cores'])) {
@@ -171,30 +174,65 @@ class OrderController extends Controller
      */
 	public function server(Request $request)
 	{
-		$validator = Validator::make(request()->all(), [
-			'cores' => ['required', 'in:2,4,6,8,10,12'],
-			'memory' => ['required', 'in:1,2,3,4,5,6,7,8,9,10'],
-			'storage' => ['required', 'in:1,2,3,4,5'],
-			'ipv4' => ['required', 'in:0,1,2,3,4']
-        ]);
+		if (RateLimiter::remaining('create-order:' . auth()->id(), $perMinute = 5)) {
+			RateLimiter::hit('create-order:' . auth()->id());
 
-		if ($validator->fails()) {
-			return redirect()->back()->withErrors($validator->errors());
-        }
+			$NOWPayments = new NOWPaymentsController();
 
-		$validator = $validator->validated();
-
-		$executed = RateLimiter::attempt(
-			'create-order:' . auth()->id(),
-			$perMinute = 2,
-			function() use ($validator) {
-				$data = $this->fixOrderServerParameters($validator);
-				$data['subtotal'] = $this->calculateServerPrice($data);
-				dd($data);
+			$enabled = $NOWPayments->getStatus();
+			
+			if (!$enabled) {
+				return redirect()->back()->withErrors([
+					'cores'	=>	'Sorry, but our payment processor API is temporarily unavailable. Please try again soon.'
+				], 'servers');
 			}
-		);
 
-		if (!$executed) {
+			$validator = Validator::make(request()->all(), [
+				'cores' => ['required', 'in:2,4,6,8,10,12'],
+				'memory' => ['required', 'in:1,2,3,4,5,6,7,8,9,10'],
+				'storage' => ['required', 'in:1,2,3,4,5'],
+				'ipv4' => ['required', 'in:0,1,2,3,4']
+			]);
+	
+			if ($validator->fails()) {
+				return redirect()->back()->withErrors($validator->errors(), 'servers');
+			}
+	
+			$validator = $validator->validated();
+
+			$data = $this->fixOrderServerParameters($validator);
+			$data['subtotal'] = $this->calculateServerPrice($data);
+
+			$id = PaymentController::generateInvoiceId();
+			$description = \sprintf('RDP [%s cores, %s GB RAM, % GB SSDs, %s IP]', $data['cores'], $data['memory'], $data['storage'], $data['ipv4']);
+			
+			$invoice = $NOWPayments->createInvoice($data['subtotal'], $id, $description);
+			
+			if (true !== $invoice['success'] || $invoice['status'] !== 200) {
+				$message = (!\is_null($invoice['error'])) ? $invoice['error'] : 'Sorry, but something went wrong. Please try again in a moment.';
+				return redirect()->back()->withErrors([
+					'cores'	=>	$message
+				], 'servers');
+			}
+
+			$invoice = $invoice['data'];
+			
+			Invoice::create([
+				'id'				=>	$invoice['id'],
+				'invoice_id'		=>	$invoice['order_id'],
+				'user_id'			=>	auth()->id(),
+				'amount_fiat'		=>	$data['subtotal'],
+				'service_type'		=>	0,
+				'status'			=>	0,
+				'updated_at'		=>	(new \DateTime($invoice['updated_at'], new \DateTimeZone('UTC'))),
+				'created_at'		=>	(new \DateTime($invoice['created_at'], new \DateTimeZone('UTC')))	
+			]);
+
+			dd($invoice);
+
+
+
+		} else {
 			return redirect()->back()->withErrors([
 				'cores'	=>	'You’ve reached the rate limit for this resource, try again in a moment please!'
 			], 'servers');

@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\Billing\PaymentController;
 use App\Http\Controllers\Auth\RegistrationController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RecoveryController;
@@ -55,6 +56,9 @@ Route::middleware(['auth', 'verified'])->group(function () {
 		Route::get('/invoices', [ClientController::class, 'showInvoices'])
 			->name('invoices');
 
+		Route::get('/invoice/{id}', [ClientController::class, 'showInvoice'])
+			->name('invoice');
+
 		Route::get('/servers', [ClientController::class, 'showServers'])
 			->name('servers');
 
@@ -69,16 +73,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
 			Route::post('email', [ClientController::class, 'emailUpdate'])->name('email');
 	
 		});
-		
+	});
+
+	Route::prefix('payments')->name('payments.')->group(function () {
+		Route::post('currencies', [PaymentController::class, 'currencies'])->name('currencies');
+
 	});
 });
 
 Route::middleware(['auth'])->group(function () {
 	Route::get('logout', [LoginController::class, 'destroy'])
 		->name('logout');
-
-	
-	Route::middleware('auth:web')->get('/billing/currencies', function (Request $request) {
-		return \json_encode(['success' => true, 'message' => 'hello']);
-	});
 });

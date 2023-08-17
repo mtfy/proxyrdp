@@ -9,6 +9,20 @@
 			</div>
 			<div class="flex flex-col flex-grow flex-shrink flex-wrap basis-0 w-full font-motify leading-snug text-[14px] md:text-[16px] lg:flex-row">
 				<div class="flex flex-col w-full lg:w-6/12">
+					<div class="flex flex-col w-full mb-5 mt-0 p-0 relative transition-all duration-300 lg:pr-[20px] justify-start items-start" v-if="('servers' in props.errors && Object.values(props.errors.servers).length !== 0) && !proxy.forms.servers.hideErrors">
+						<div class="flex flex-col w-full bg-red-200 px-[30px] py-[15px] border border-red-400 rounded-sm">
+							<div class="flex flex-col w-full items-start justify-start">
+								<span class="flex flex-col font-motify font-semibold whitespace-pre-wrap text-slate-800 text-[12px] leading-[18px] md:text-[14px] md:leading-[22px]">The following error(s) needs to be corrected:</span>
+							</div>
+							<div class="flex flex-col w-full items-start justify-start">
+								<ul role="list" class="flex flex-col w-full list-disc text-slate-800 relative p-0 m-0 pl-5">
+									<li v-for="(err) in Object.values(props.errors.servers)">
+										<span class="flex flex-col font-motify font-semibold whitespace-pre-wrap text-[12px] leading-[18px] md:text-[14px] md:leading-[22px]">{{ err }}</span>
+									</li>
+								</ul>
+							</div>
+						</div>
+					</div>
 					<div class="flex flex-col w-full justify-start items-start pb-[20px] lg:p-0 lg:pr-[20px]">
 						<p class="whitespace-pre-wrap text-[16px] lg:text-[18px]">Customize server settings, sepcifications, and resources to align perfectly with your unique requirements. Scale up or down effortlessly as your needs evolve, ensuring seamless performance and resource allocation.</p>
 					</div>
@@ -127,7 +141,7 @@
 							</div>
 							<div class="flex flex-col w-full items-center justify-center lg:w-6/12 lg:justify-center lg:items-end">
 								<div class="w-full lg:w-auto">
-									<Button :type="'submit'" :custom-class="'override:text-[14px] override:font-medium w-full lg:w-auto capitalize text-center justify-center items-center text-[12px] md:text-[14px] bg-theme-secondary-500 text-white hover:bg-theme-secondary-700 hover:text-[#F5F5F5]'">
+									<Button :type="'submit'" :disabled="proxy.forms.servers.checkoutPending" :custom-class="'override:text-[14px] override:font-medium w-full lg:w-auto capitalize text-center justify-center items-center text-[12px] md:text-[14px] bg-theme-secondary-500 text-white hover:bg-theme-secondary-700 hover:text-[#F5F5F5]'">
 										<div class="flex flex-row w-full items-center justify-center space-x-2 leading-[18px]">
 											<div class="flex flex-col"><svg xmlns="http://www.w3.org/2000/svg" role="img" width="20px" height="20px" fill="currentColor" class="flex flex-col select-none pointer-events-none" viewBox="0 0 24 24"><path d="M7,18c-1.1,0-1.99,0.9-1.99,2S5.9,22,7,22s2-0.9,2-2S8.1,18,7,18z M17,18c-1.1,0-1.99,0.9-1.99,2s0.89,2,1.99,2s2-0.9,2-2 S18.1,18,17,18z M8.1,13h7.45c0.75,0,1.41-0.41,1.75-1.03L21,4.96L19.25,4l-3.7,7H8.53L4.27,2H1v2h2l3.6,7.59l-1.35,2.44 C4.52,15.37,5.48,17,7,17h12v-2H7L8.1,13z M12,2l4,4l-4,4l-1.41-1.41L12.17,7L8,7l0-2l4.17,0l-1.59-1.59L12,2z"/></svg></div>
 											<div class="flex flex-col">Checkout</div>
@@ -227,7 +241,9 @@
 	import Swal from 'sweetalert2/dist/sweetalert2.js'
 	import 'sweetalert2/dist/sweetalert2.min.css';
 
-	const props = defineProps({}),
+	const props = defineProps({
+		errors: Object
+	}),
 
 	Toast = Swal.mixin({
 		toast: true,
@@ -250,6 +266,7 @@
 		forms			:	{
 			servers		:	{
 				hideErrors : true,
+				checkoutPending: false,
 				memory	:	{
 					values	:	{
 						'1'	:	'2',
@@ -291,6 +308,7 @@
 	
 
 	calcServerSubtotal = async() => {
+		proxy.forms.servers.hideErrors = true;
 		if ((parseInt(form.servers.memory) || 0) === 12) {
 			proxy.forms.servers.memory.step = '4';
 		} else {
@@ -405,8 +423,12 @@
 		proxy.subtotal.servers = parseFloat(total.toString());
 	},
 
-	submitServer = () => {
+	submitServer = async() => {
+		proxy.forms.servers.checkoutPending = true;
 		form.servers.post(route('clientarea.order.server'), {
+			onFinish: () => {
+				proxy.forms.servers.checkoutPending = false;
+			},
 			onSuccess: () => {
 				proxy.forms.servers.hideErrors = true;
 				Swal.fire({
@@ -419,48 +441,109 @@
 				Toast.fire({
 					icon: 'error',
 					title: 'Whoops!',
-					text: `Sorry, but something went wrong!`
+					text: `Sorry, but please check your entries and try again!`
 				});
 			}
 		});
-	},
+	};
 
-	fetchCurrencies = async() => {
-		console.log(user.value.token);
+	/*fetchCurrencies = async() => {
 		return new Promise(async(resolve, reject) => {
 
-			await fetch(`/billing/currencies`, {
-				method : 'GET',
-				credentials: 'same-origin'
+			await fetch(`/payments/currencies`, {
+				method : 'POST',
+				credentials: 'same-origin',
+				headers: {
+					'Accept' : 'application/json', 
+					'X-CSRF-TOKEN' : usePage().props.csrf_token,
+				}
 			}).then(async(response) => {
 				return response.text();
 			}).then(async(result) => {
 				try {
 					result = JSON.parse(result);
 				} catch(err) {
-					//window.console.log('Unable to fetch currencies', err);
-					reject(result);
+					reject({
+						success: false,
+						message: err,
+						data: {}
+					});
 				}
 
 				if (!result.success) {
-					//window.console.error(`Unable to fetch currencies`, result.message);
 					reject(result);
 				} else {
-					//window.console.log('Successfully fetched currencies', JSON.stringify(result));
 					resolve(result);
 				}
 			});
 
 		});
-	};
+	},
+
+	selectPaymentCurrency = async() => {
+		proxy.forms.servers.checkoutPending = true;
+
+		async function prompt() {
+			let currencies = {};
+			for (let i = 0; i !== proxy.payment.currencies.length; ++i)
+				currencies[proxy.payment.currencies[i].toLowerCase()] = proxy.payment.currencies[i].toUpperCase();
+			
+			const { value: currency } = await Swal.fire({
+				title: 'Payment method',
+				input: 'select',
+				inputOptions: {
+					'Crypto currencies': currencies
+				},
+				inputPlaceholder: 'Select a payment option',
+				showCancelButton: true,
+				inputValidator: (value) => {
+					return new Promise((resolve) => {
+						if (value.trim() === '') {
+							resolve('Please select a payment method.');
+						} else {
+							resolve();
+						}
+					});
+				}
+			});
+
+			if (currency) {
+				form.servers.payment_method = currency;
+				await nextTick().then(async() => {
+					await submitServer();
+				});
+			}
+			proxy.forms.servers.checkoutPending = false;
+		};
+
+		if (null === proxy.payment.currencies) {
+			await fetchCurrencies().then(async(result) => {
+				if (result.success !== false) {
+					proxy.payment.currencies = result.data;
+					await prompt();
+				} else {
+					Swal.fire({
+						icon: 'error',
+						title: 'Whoops!',
+						text: result.message
+					});
+				}
+			}).catch(async(result) => {
+				Swal.fire({
+					icon: 'error',
+					title: 'Whoops!',
+					text: result.message
+				});
+				proxy.forms.servers.checkoutPending = false;
+			});
+		} else {
+			await prompt();
+		}
+		
+		
+	};*/
 
 	onMounted(async() => {
-		await nextTick().then(async() => {
-			await fetchCurrencies().then(async(result) => {
-				//window.console.log(result);
-			}).catch(async(error) => {
-				//window.console.log(error);
-			})
-		});
+
 	});
 </script>

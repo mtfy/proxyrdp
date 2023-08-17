@@ -11,4 +11,7 @@ class Invoice extends Model
     use HasFactory;
 	protected $guarded = [];
 	protected $table = 'invoices';
+	protected $casts = ['id' => 'bigint'];
+
+	public $timestamps = false;
 }

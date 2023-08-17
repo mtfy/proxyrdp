@@ -99,8 +99,7 @@
 	import 'sweetalert2/dist/sweetalert2.min.css';
 
 	const props = defineProps({
-		errors: Object,
-		user: Object
+		errors: Object
 	}),
 	page = usePage(),
 	user = computed(() => page.props.user),

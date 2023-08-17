@@ -31,7 +31,7 @@ class NOWPaymentsController extends Controller
 		$this->api_token = env('NOWPAYMENTS_API_KEY', '');
 		$this->ipn_secret = env('NOWPAYMENTS_IPN_SECRET', '');
 		$this->ipn_callback_url = env('NOWPAYMENTS_IPN_CALLBACK_URL');
-		$this->debug = (true !== app()->isProduction());
+		$this->debug = (false === app()->isProduction());
 	}
 
 
@@ -62,9 +62,6 @@ class NOWPaymentsController extends Controller
 			$response['error'] = ($this->debug ? 'Invalid request body.' : 'Sorry, but something went wrong. Please try again in a moment!');
 			return $response;
 		}
-
-		if (!\is_null($body) && \is_array($body))
-			$body = \json_encode( $body );
 
 		$result = NULL;
 
@@ -131,7 +128,7 @@ class NOWPaymentsController extends Controller
 				$response['status'] = \intval( Helpers::getStringBetween($ex->getMessage(), 'HTTP request returned status code ', ':') );
 			}
 			$response['success'] = false;
-			$response['error'] = ($this->debug) ? 'An error occured, please try again.' : $message;
+			$response['error'] = ($this->debug) ? $message : 'An error occured, please try again.';
 		}
 		return $response;
 	}
@@ -231,6 +228,42 @@ class NOWPaymentsController extends Controller
 		{
 			$response['error'] = $this->debug ? 'Currency not found.' : 'Sorry, but something went wrong.';
 		}
+
+		return $response;
+	}
+
+
+	/**
+	 * Creates a payment link. With this method, the customer is required to follow the generated url to complete the payment. Data must be sent as a JSON-object payload.
+	 *
+	 * @param  float  $amount
+	 * @param  string $invoice_id
+	 * @param  string $description
+	 * @return array
+	 */
+	public function createInvoice(float $amount, string $invoice_id, string $description = 'RDP') : array
+	{
+		$id = auth()->id();
+		if (\is_null($id)) {
+			$id = 1;
+		}
+
+		$appName = env('APP_NAME', 'ProxyRDP');
+
+		$description = \sprintf('%s | User ID: %d | %s', $description, $id, $appName);
+
+		$response = $this->httpRequest('invoice', 'POST', [
+			'content-type'			=>	'application/json; charset=utf-8',
+			'x-api-key'				=>	$this->api_token
+		], [
+			'price_amount'			=>	$amount,
+			'price_currency'		=>	'eur',
+			'order_id'				=>	$invoice_id,
+			'order_description'		=>	$description,
+			'is_fee_paid_by_user'	=>	true,
+			'success_url'			=>	\sprintf('%s/clientarea/invoices/%s/success', url('/'), $invoice_id),
+			'cancel_url'			=>	\sprintf('%s/clientarea/invoices/%s/cancel', url('/'), $invoice_id)
+		]);
 
 		return $response;
 	}

@@ -28,11 +28,20 @@
 				<li class="flex flex-col w-full min-h-[20px] relative">
 					<Link href="/" class="flex flex-col w-full text-[18px] leading-[20px] align-center p-0 m-0 text-md text-gray-50 transition-colors ease-in-out duration-300 hover:text-gray-300 px-[20px] py-[12px]" :class="(!proxy.mobileMenu) ? 'invisible' : ''" :aria-hidden="false === proxy.mobileMenu">Contacts</Link>
 				</li>
-				<li class="flex flex-col w-full min-h-[20px] relative">
+				<li class="flex flex-col w-full min-h-[20px] relative" v-if="user.guest">
 					<Link href="/clientarea/login" class="flex flex-col w-full text-[18px] leading-[20px] align-center p-0 m-0 text-md text-gray-50 transition-colors ease-in-out duration-300 hover:text-gray-300 px-[20px] py-[12px]" :class="(!proxy.mobileMenu) ? 'invisible' : ''" :aria-hidden="false === proxy.mobileMenu">Login</Link>
 				</li>
+				<li class="flex flex-col w-full min-h-[20px] relative" v-if="user.guest">
+					<Link href="/clientarea/register" class="flex flex-col w-full text-[18px] leading-[20px] align-center p-0 m-0 text-md text-gray-50 transition-colors ease-in-out duration-300 hover:text-gray-300 px-[20px] py-[12px] capitalize" :class="(!proxy.mobileMenu) ? 'invisible' : ''" :aria-hidden="false === proxy.mobileMenu">Sign up</Link>
+				</li>
 				<li class="flex flex-col w-full min-h-[20px] relative">
-					<Link href="/clientarea/register" class="flex flex-col w-full text-[18px] leading-[20px] align-center p-0 m-0 text-md text-gray-50 transition-colors ease-in-out duration-300 hover:text-gray-300 px-[20px] py-[12px]" :class="(!proxy.mobileMenu) ? 'invisible' : ''" :aria-hidden="false === proxy.mobileMenu">Sign Up</Link>
+					<Link href="/clientarea/" class="flex flex-col w-full text-[18px] leading-[20px] align-center p-0 m-0 text-md text-gray-50 transition-colors ease-in-out duration-300 hover:text-gray-300 px-[20px] py-[12px]" :class="(!proxy.mobileMenu) ? 'invisible' : ''" :aria-hidden="false === proxy.mobileMenu">Clientarea</Link>
+				</li>
+				<li class="flex flex-col w-full min-h-[20px] relative">
+					<Link href="/clientarea/account" class="flex flex-col w-full text-[18px] leading-[20px] align-center p-0 m-0 text-md text-gray-50 transition-colors ease-in-out duration-300 hover:text-gray-300 px-[20px] py-[12px]" :class="(!proxy.mobileMenu) ? 'invisible' : ''" :aria-hidden="false === proxy.mobileMenu">Settings</Link>
+				</li>
+				<li class="flex flex-col w-full min-h-[20px] relative">
+					<Link href="/logout" class="flex flex-col w-full text-[18px] leading-[20px] align-center p-0 m-0 text-md text-gray-50 transition-colors ease-in-out duration-300 hover:text-gray-300 px-[20px] py-[12px] capitalize" :class="(!proxy.mobileMenu) ? 'invisible' : ''" :aria-hidden="false === proxy.mobileMenu">Sign out</Link>
 				</li>
 			</ul>
 		</div>
@@ -71,7 +80,7 @@
 			</div>
 			<div class="flex flex-col items-end justify-center w-2/12 p-0 m-0 relative">
 				<div class="flex flex-col items-end	w-full m-0 p-0 float-right">
-					<ul class="flex flex-row space-x-10 w-full list-none font-motify items-center" v-show="proxy.user.guest">
+					<ul class="flex flex-row space-x-10 w-full list-none font-motify items-center" v-show="user.guest">
 						<li class="flex flex-col">
 							<Link href="/clientarea/login" class="inline-flex align-center p-0 m-0 text-md font-bold text-gray-50 transition-colors ease-in-out duration-300 hover:text-gray-300">
 								Login
@@ -88,7 +97,7 @@
 							</Link>
 						</li>
 					</ul>
-					<ul class="flex flex-row space-x-10 w-full list-none font-motify items-center" v-show="!proxy.user.guest">
+					<ul class="flex flex-row space-x-10 w-full list-none font-motify items-center" v-show="!user.guest">
 						<li class="flex flex-col relative min-w-[160px]" ref="refUserMenu">
 							<div class="flex flex-col w-full relative">
 								<span class="inline-block w-full" aria-expanded="false" aria-haspopup="listbox" role="combobox">
@@ -101,7 +110,7 @@
 													</div>
 												</div>
 												<div class="flex flex-col p-0 m-0 justify-center items-center relative">
-													<span class="flex flex-col capitalize w-full font-motify text-white leading-[18px] truncate text-[12px] md:leading-[22px] md:text-[14px]">{{ proxy.user.first_name }}&#160;{{ proxy.user.last_name }}</span>
+													<span class="flex flex-col capitalize w-full font-motify text-white leading-[18px] truncate text-[12px] md:leading-[22px] md:text-[14px]">{{ user.first_name }}&#160;{{ user.last_name }}</span>
 												</div>
 												<div class="flex flex-col p-0 m-0 justify-center items-center relative">
 													<div class="inline-flex m-0 p-0 relative min-h-[24px] max-h-[24px] max-w-[24px] min-w-[24px] w-[24px] h-[24px] select-none">
@@ -156,12 +165,11 @@
 </template>
 
 <script setup>
-	import { reactive, onMounted, ref, nextTick } from 'vue';
-	import { Link } from '@inertiajs/vue3';
+	import { reactive, onMounted, ref, nextTick, computed } from 'vue';
+	import { Link, usePage } from '@inertiajs/vue3';
 
-	const props = defineProps({
-		user: Object
-	}),
+	const page = usePage(),
+	user = computed(() => page.props.user),
 
 	refUserMenu = ref(null),
 
@@ -178,14 +186,7 @@
 			hidden	:	true
 		},
 		scrollY		:	0,
-		mobileMenu	:	false,
-		user		:	{
-			guest		:	true,
-			id			:	null,
-			first_name	:	null,
-			last_name	:	null,
-			email		:	null
-		}
+		mobileMenu	:	false
 	}),
 
 	handleResize = (event) => {
@@ -210,16 +211,6 @@
 		proxy.mobileMenu = !proxy.mobileMenu;
 	},
 
-	cacheUserData = () => {
-		if ('user' in props && 'object' === typeof props.user && null !== props.user && Object.entries(props.user).length > 0) {
-			proxy.user.guest = props.user.guest;
-			proxy.user.id = props.user.id;
-			proxy.user.first_name = props.user.first_name;
-			proxy.user.last_name = props.user.last_name;
-			proxy.user.email = props.user.email;
-		}
-	},
-
 	calculateUserMenuPosition = () => {
 		var containerRect = null;
 
@@ -236,7 +227,6 @@
 	}
 
 	onMounted(async() => {
-		cacheUserData();
 		window.addEventListener('resize', handleResize);
 		window.addEventListener('scroll', handleScroll);
 		handleResize();

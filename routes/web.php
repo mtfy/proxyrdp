@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\Billing\PaymentController;
+use App\Http\Controllers\Billing\WalletController;
 use App\Http\Controllers\Auth\RegistrationController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RecoveryController;
@@ -64,6 +65,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 		Route::get('/proxies', [ClientController::class, 'showProxies'])
 			->name('proxies');
+
+		Route::get('/wallet', [WalletController::class, 'create'])
+			->name('wallet');
+
+		Route::prefix('wallet')->name('wallet.')->group(function () {
+
+			Route::post('/topup', [WalletController::class, 'store'])->name('topup');
+	
+		});
 
 		Route::get('/account', [ClientController::class, 'showAccount'])
 			->name('account');

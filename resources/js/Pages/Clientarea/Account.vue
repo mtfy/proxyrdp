@@ -27,18 +27,22 @@
 						<form class="flex flex-col w-full relative space-y-[20px]" @submit.prevent="submit('password', 'clientarea.account.password')">
 							<div class="flex flex-col w-full m-0 p-0">
 								<label class="flex flex-col font-motify font-medium w-full capitalize text-slate-950 text-[12px] leading-[18px] md:text-[14px] md:leading-[22px]" for="current_password">Current password</label>
-								<Input  @update:model-value="delete props.errors.curent_password" v-model="form.password.current_password" :type="'password'" :placeholder="'Enter your current password'" :autocomplete="'current-password'" :id="'current_password'" :required="true" />
+								<Input  @update:model-value="delete props.errors.curent_password" v-model="form.password.current_password" :type="'password'" :placeholder="'Enter your current password'" :autocomplete="'current-password'" :id="'current_password'" :name="'Current Password'" :required="true" />
+							</div>
+							<div class="flex flex-col w-[10px] max-w-[10px] m-0 p-0 absolute z-[-1394] invisible" aria-hidden="true" style="left: -99219px !important; top: 42.66vh !important">
+								<label class="flex flex-col font-motify font-medium max-w-[10px] min-w-[10px] w-full capitalize text-slate-950 text-[12px] leading-[18px] md:text-[14px] md:leading-[22px]  absolute z-[-1394]" for="user_email" aria-hidden="true" style="left: -99219px !important; top: 42.66vh !important">Email</label>
+								<input type="hidden" class="flex flex-col max-w-[10px] min-w-[10px] w-full absolute z-[-1394]" :value="user.email" autocomplete="username" aria-autocomplete="username" name="Username" id="user_email" aria-hidden="true" style="left: -99219px !important; top: 42.66vh !important" />
 							</div>
 							<div class="flex flex-col w-full m-0 p-0">
 								<label class="flex flex-col font-motify font-medium w-full capitalize text-slate-950 text-[12px] leading-[18px] md:text-[14px] md:leading-[22px]" for="password">New password</label>
-								<Input @update:model-value="delete props.errors.password" v-model="form.password.password" :type="'password'" :placeholder="'Enter your new password'" :autocomplete="'new-password'" :id="'password'" :required="true" />
+								<Input @update:model-value="delete props.errors.password" v-model="form.password.password" :type="'password'" :placeholder="'Enter your new password'" :autocomplete="'new-password'" :id="'password'" :name="'New Password'" :required="true" />
 							</div>
 							<div class="flex flex-col w-full m-0 p-0">
 								<label class="flex flex-col font-motify font-medium w-full capitalize text-slate-950 text-[12px] leading-[18px] md:text-[14px] md:leading-[22px]" for="password_confirm">Confirm password</label>
-								<Input @update:model-value="delete props.errors.password_confirmation" v-model="form.password.password_confirmation" :type="'password'" :placeholder="'Enter your new password again'" :autocomplete="'new-password'" :id="'password_confirmation'" :required="true" />
+								<Input @update:model-value="delete props.errors.password_confirmation" v-model="form.password.password_confirmation" :type="'password'" :placeholder="'Enter your new password again'" :autocomplete="'new-password'" :name="'Password Confirmation'" :id="'password_confirmation'" :required="true" />
 							</div>
 							<div class="flex flex-col w-full m-0 p-0">
-								<Button :type="'submit'" :custom-class="'w-full capitalize text-center justify-center items-center text-[12px] md:text-[14px] bg-theme-secondary-500 text-white hover:bg-theme-secondary-700 hover:text-[#F5F5F5]'">
+								<Button :type="'submit'" :name="'Submit Form'" :custom-class="'w-full capitalize text-center justify-center items-center text-[12px] md:text-[14px] bg-theme-secondary-500 text-white hover:bg-theme-secondary-700 hover:text-[#F5F5F5]'">
 									Save changes
 								</Button>
 							</div>
@@ -67,18 +71,18 @@
 						<form class="flex flex-col w-full relative space-y-[20px]" @submit.prevent="submit('email', 'clientarea.account.email')">
 							<div class="flex flex-col w-full m-0 p-0">
 								<label class="flex flex-col font-motify font-medium w-full capitalize text-slate-950 text-[12px] leading-[18px] md:text-[14px] md:leading-[22px]" for="current_email">Current email address</label>
-								<Input :type="'email'" :modelValue="user.email" :readOnly="true" :disabled="true" :id="current_email" :maxlength="255" :customClass="'cursor-text'"  />
+								<Input :type="'email'" :modelValue="user.email" :readOnly="true" :disabled="true" :id="current_email" :maxlength="255" :customClass="'cursor-text'" :name="'Current Email'"  />
 							</div>
 							<div class="flex flex-col w-full m-0 p-0">
 								<label class="flex flex-col font-motify font-medium w-full capitalize text-slate-950 text-[12px] leading-[18px] md:text-[14px] md:leading-[22px]" for="email_address">New email address</label>
-								<Input @update:model-value="delete props.errors.email_address" v-model="form.email.email_address" :type="'email'" :placeholder="'Enter your new email'" :autocomplete="'email'" :id="'email_address'" :maxlength="255" :required="true" />
+								<Input @update:model-value="delete props.errors.email_address" v-model="form.email.email_address" :type="'email'" :placeholder="'Enter your new email'" :autocomplete="'email'" :id="'email_address'" :name="'New Email Address'" :maxlength="255" :required="true" />
 							</div>
 							<div class="flex flex-col w-full m-0 p-0">
-								<label class="flex flex-col font-motify font-medium w-full capitalize text-slate-950 text-[12px] leading-[18px] md:text-[14px] md:leading-[22px]" for="current_password">Current password</label>
-								<Input @update:model-value="delete props.errors.current_password" v-model="form.email.current_password" :type="'password'" :placeholder="'Enter your current password'" :autocomplete="'current-password'" :id="'current_password'" :required="true" />
+								<label class="flex flex-col font-motify font-medium w-full capitalize text-slate-950 text-[12px] leading-[18px] md:text-[14px] md:leading-[22px]" for="current_password--1">Current password</label>
+								<Input @update:model-value="delete props.errors.current_password" v-model="form.email.current_password" :type="'password'" :placeholder="'Enter your current password'" :autocomplete="'current-password'" :id="'current_password--1'" :name="'Current Password 1'" :required="true" />
 							</div>
 							<div class="flex flex-col w-full m-0 p-0 ">
-								<Button :type="'submit'" :custom-class="'w-full capitalize text-center justify-center items-center text-[12px] md:text-[14px] bg-theme-secondary-500 text-white hover:bg-theme-secondary-700 hover:text-[#F5F5F5]'">
+								<Button :type="'submit'" :name="'Submit Form 1'" :custom-class="'w-full capitalize text-center justify-center items-center text-[12px] md:text-[14px] bg-theme-secondary-500 text-white hover:bg-theme-secondary-700 hover:text-[#F5F5F5]'">
 									Save changes
 								</Button>
 							</div>

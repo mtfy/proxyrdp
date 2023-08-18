@@ -14,7 +14,6 @@ use App\Helpers\Helpers;
 
 class PaymentController extends Controller
 {
-
 	private $payment_status		=	[
 		'original'	=>	[
 			'waiting'				=>		0,

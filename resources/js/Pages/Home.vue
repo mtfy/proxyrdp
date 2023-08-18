@@ -1,5 +1,5 @@
 <template>
-	<MainLayout :user="props.user">
+	<MainLayout :user="user">
 		<Landing />
 		<div class="bg-white flex flex-col justify-center relative max-w-[100%] w-full py-[48px] md:py-[72px] m-0">
 			<div class="motify-container relative w-full max-w-[100%] p-0 m-0 pt-5">
@@ -247,36 +247,9 @@
 	import MainLayout from '../Layouts/MainLayout.vue';
 	import Landing from '../Components/Landing.vue';
 	import Button from '../Components/Button.vue';
-	import { Link } from '@inertiajs/vue3'
+	import { Link, usePage } from '@inertiajs/vue3'
+	import { computed } from 'vue';
 	
-	import Swal from 'sweetalert2/dist/sweetalert2.js'
-	import 'sweetalert2/dist/sweetalert2.min.css';
-	import { nextTick, reactive, onMounted } from 'vue';
-
-	const props = defineProps({
-		user: Object
-	}),
-
-	proxy = reactive({
-		user		:	{
-			guest		:	true,
-			id			:	null,
-			first_name	:	null,
-			last_name	:	null,
-			email		:	null
-		}
-	}),
-	cacheUserData = async() => {
-		if ('user' in props && 'object' === typeof props.user && null !== props.user && Object.entries(props.user).length > 0) {
-			proxy.user.guest = props.user.guest;
-			proxy.user.id = props.user.id;
-			proxy.user.first_name = props.user.first_name;
-			proxy.user.last_name = props.user.last_name;
-			proxy.user.email = props.user.email;
-		}
-	};
-
-	onMounted(async() => {
-		cacheUserData();
-	});
+	const page = usePage(),
+	user = computed(() => page.props.user);
 </script>

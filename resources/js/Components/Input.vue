@@ -21,28 +21,30 @@
 				:required="!!required"
 				:aria-required="!!required"
 				:value="modelValue"
+				:name="name"
+				:min="min"
+				:max="max"
+				:step="step"
 			/>
 		</div>
 	</div>
 </template>
 <script setup>
-	import { reactive, onMounted, ref } from 'vue';
+	import { reactive, onMounted, ref, nextTick } from 'vue';
 
 	const proxy = reactive({
 		focus	:	false
 	}),
-	input = ref(null);
+	input = ref(null),
+
+	fixCurrency = async() => {
+		
+	};
 
 	defineEmits(['update:modelValue']);
 
 	defineExpose({
 		focus: () => input.value.focus()
-	});
-
-	onMounted(() => {
-		if (input.value.hasAttribute('autofocus')) {
-			input.value.focus();
-		}
 	});
 
 	defineProps({
@@ -51,6 +53,10 @@
 			default: 'text'
 		},
 		id: {
+			type: String,
+			default: null
+		},
+		name: {
 			type: String,
 			default: null
 		},
@@ -82,9 +88,29 @@
 			type: Boolean,
 			default: null
 		},
+		min: {
+			type: Number,
+			default: null
+		},
+		max: {
+			type: Number,
+			default: null
+		},
+		step: {
+			type: Number,
+			default: null
+		},
 		modelValue: {
 			type: String,
 			default: null
 		}
+	});
+
+	onMounted(async() => {
+		await nextTick().then(async() => {
+			if (input.value.hasAttribute('autofocus')) {
+				input.value.focus();
+			}
+		});
 	});
 </script>

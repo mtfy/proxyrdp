@@ -1,5 +1,5 @@
 <template>
-	<ClientLayout :user="props.user" :activePage="2">
+	<ClientLayout :activePage="2">
 
 	</ClientLayout>
 </template>

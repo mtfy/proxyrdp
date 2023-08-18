@@ -217,6 +217,12 @@ body.motify {
 	text-shadow: 1px 1px 3px #00000040;
 }
 
+.motify-btn-sm {
+	font-size: 14px !important;
+	padding: 12px 48px !important;
+	font-weight: 500 !important;
+}
+
 .motify-table-btn-sm {
 	font-size: 12px !important;
 	padding: 6px 15px !important;
@@ -262,6 +268,35 @@ body.motify {
 .motify-auth-divider::after {
 	margin: 0 0 0 8px;
 }
+
+/*********************************************
+	[BEGIN] Tippy.js
+*/
+
+.tippy-box {
+	background: #0C134F !important;
+}
+
+.tippy-arrow {
+	color: #0C134F !important;
+}
+
+.tippy-box, .tippy-arrow, .tippy-content {
+	font-family: 'Motify Pro', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol' !important;
+	-webkit-tap-highlight-color: transparent !important;
+	-moz-user-select: none !important;
+	-ms-user-select: none !important;
+	-webkit-user-select: none !important;
+	user-select: none !important;
+}
+
+
+
+/*
+	[END] Tippy.js
+*********************************************/
+
+
 
 /*********************************************
 	[BEGIN] SweetAlert

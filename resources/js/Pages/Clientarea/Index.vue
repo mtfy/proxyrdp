@@ -1,5 +1,5 @@
 <template>
-	<ClientLayout :user="user" :activePage="0">
+	<ClientLayout :activePage="0">
 		<div class="flex flex-col w-full p-0 m-0">
 			<span class="flex flex-col font-medium whitespace-pre-wrap text-[20px] leading-[24px] capitalize">Hello, {{ user.first_name }}!</span>
 		</div>
@@ -99,16 +99,13 @@
 <script setup>
 	import Button from '../../Components/Button.vue';
 	import ClientLayout from '../../Layouts/ClientLayout.vue';
-	import { reactive, computed, onMounted, nextTick } from 'vue';
+	import { computed, onMounted, nextTick } from 'vue';
 	import { Link, usePage } from '@inertiajs/vue3';
 	import Swal from 'sweetalert2/dist/sweetalert2.js'
 	import 'sweetalert2/dist/sweetalert2.min.css';
 
-	const props = defineProps({}),
-	page = usePage(),
+	const page = usePage(),
 	user = computed(() => page.props.user),
-
-	proxy = reactive({}),
 
 	Toast = Swal.mixin({
 		toast: true,

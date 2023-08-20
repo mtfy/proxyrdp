@@ -8,7 +8,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Support\Facades\Cookie;
 use App\Models\User;
-use App\Models\Invoice;
+use App\Models\Payment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\RateLimiter;
@@ -82,14 +82,13 @@ class ClientController extends Controller
 	public function showInvoices()
 	{
 
-		$invoices = Invoice::select('id', 'invoice_id', 'amount_fiat', 'service_type', 'status', 'created_at', 'updated_at')->where('user_id', auth()->id())->orderByDesc('created_at')->paginate(15);
+		$invoices = Payment::select('id', 'invoice_id', 'amount', 'status', 'created_at', 'updated_at')->where('user_id', auth()->id())->orderByDesc('created_at')->paginate(15);
 		$items = $invoices->through(function ($invoice) {
 			$paymentController = new PaymentController();
 			return [
 				'invoice_id' => $invoice->invoice_id,
 				'payment_id' => $invoice->id,
-				'amount' => $invoice->amount_fiat,
-				'service' => $invoice->service_type,
+				'amount' => $invoice->amount,
 				'status' => $paymentController->getPaymentStatusLabel($invoice->status),
 				'created_at' => $invoice->created_at,
 				'updated_at' => $invoice->updated_at
@@ -111,7 +110,7 @@ class ClientController extends Controller
 	 */
 	public function showInvoice(Request $request, string $id)
 	{
-		$invoice = Invoice::select('id', 'invoice_id', 'amount_fiat', 'service_type', 'status', 'created_at', 'updated_at')
+		$invoice = Payment::select('payment_id', 'invoice_id', 'amount', 'status', 'created_at', 'updated_at')
 			->where([
 				'user_id' => auth()->id(),
 				'invoice_id' => $id
@@ -124,9 +123,8 @@ class ClientController extends Controller
 				'ok'	=>	true,
 				'data'	=>	[
 					'invoice_id' => $invoice->invoice_id,
-					'payment_id' => $invoice->id,
-					'amount' => $invoice->amount_fiat,
-					'service' => $invoice->service_type,
+					'payment_id' => $invoice->payment_id,
+					'amount' => $invoice->amount,
 					'status' => [
 						'id' => \intval($invoice->status),
 						'text' => $paymentController->getPaymentStatusLabel($invoice->status)
@@ -144,7 +142,6 @@ class ClientController extends Controller
 					'invoice_id' => NULL,
 					'payment_id' => NULL,
 					'amount' => NULL,
-					'service' => NULL,
 					'status' => [
 						'id' => NULL,
 						'text' => NULL

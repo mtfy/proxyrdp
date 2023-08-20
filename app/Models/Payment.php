@@ -6,12 +6,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 
-class Invoice extends Model
+class Payment extends Model
 {
     use HasFactory;
 	protected $guarded = [];
-	protected $table = 'invoices';
-	protected $casts = ['id' => 'bigint'];
+	protected $table = 'payments';
 
 	public $timestamps = false;
 }

@@ -9,7 +9,6 @@
 					<thead>
 						<th colspan="3">ID</th>
 						<th>Subtotal</th>
-						<th>Service</th>
 						<th colspan="2">Status</th>
 						<th colspan="2">Created at</th>
 						<th colspan="3">Updated at</th>
@@ -18,12 +17,11 @@
 						<tr v-for="item in props.items.data" :key="item.invoice_id">
 							<td colspan="3" class="py-[6px] lg:py-[4px]"><span class="tracking-wide" v-html="formatInvoiceId(item.invoice_id)"></span></td>
 							<td class="py-[6px] lg:py-[4px]">{{ num.format(parseFloat(item.amount) || 0) }}</td>
-							<td class="py-[6px] lg:py-[4px]">{{ item.service === 0 ? 'RDP' : 'Proxy' }}</td>
 							<td colspan="2" class="py-[6px] lg:py-[4px]">{{ item.status }}</td>
 							<td colspan="2" class="py-[6px] lg:py-[4px]">{{ formatDate(item.created_at) }}</td>
 							<td colspan="2" class="py-[6px] lg:py-[4px]">{{ formatDate(item.updated_at) }}</td>
 							<td class="py-[6px] lg:py-[4px]">
-								<Link :href="`/clientarea/invoice/${item.invoice_id}`" class="flex flex-col w-full lg:w-auto justify-center items-center select-none cursor-pointer no-underline transition-all duration-300">
+								<Link :href="`/clientarea/invoices/${item.invoice_id}`" class="flex flex-col w-full lg:w-auto justify-center items-center select-none cursor-pointer no-underline transition-all duration-300">
 									<Button :type="'button'" :customClass="'motify-table-btn-sm rounded-[4px] bg-theme-secondary-500 text-white w-full capitalize text-center justify-center items-center hover:bg-theme-secondary-700 hover:text-[#F5F5F5]'">
 										View
 									</Button>

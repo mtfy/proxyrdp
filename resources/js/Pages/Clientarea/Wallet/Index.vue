@@ -56,7 +56,7 @@
 				</div>
 			</div>
 			<div class="flex flex-col w-full relative max-w-full lg:max-w-[50%]">
-				<div class="flex flex-col w-full mb-4 mt-2 p-0 relative transition-all ease-in-out duration-300" v-if="('password' in errors && Object.values(props.errors).length !== 0) && !proxy.hideErrors.addFunds">
+				<div class="flex flex-col w-full m-0 mb-4 p-0 relative transition-all ease-in-out duration-300" v-if="('addFunds' in errors && Object.values(props.errors).length !== 0) && !proxy.forms.addFunds.hideErrors">
 					<div class="flex flex-col w-full bg-red-200 px-[30px] py-[15px] border border-red-400 rounded-sm">
 						<div class="flex flex-col w-full items-start justify-start">
 							<span class="flex flex-col font-motify font-semibold whitespace-pre-wrap text-slate-800 text-[12px] leading-[18px] md:text-[14px] md:leading-[22px]">The following error(s) needs to be corrected:</span>
@@ -70,7 +70,7 @@
 						</div>
 					</div>
 				</div>
-				<form class="flex flex-col w-full relative space-y-[20px]" @submit.prevent="validateAddFunds">
+				<form class="flex flex-col w-full relative space-y-[20px]" @submit.prevent="submitAddFunds">
 					<div class="flex flex-col md:flex-row w-full space-y-[20px] md:space-y-0 md:space-x-5 relative m-0 p-0">
 						<div class="flex flex-col w-full md:w-6/12 relative m-0 p-0">
 							<div class="flex flex-col w-full m-0 p-0">
@@ -85,14 +85,14 @@
 						<div class="flex flex-col w-full md:w-6/12 relative m-0 p-0">
 							<div class="flex flex-col w-full m-0 p-0">
 								<label class="flex flex-col font-motify font-medium w-full capitalize text-slate-950 text-[12px] leading-[18px] md:text-[14px] md:leading-[22px]" for="payment_amount">Amount</label>
-								<Input v-model="form.addFunds.payment_amount" :type="'number'" :step=".01" :min="10.00" :max="9999" :id="'payment_amount'" :name="'Payment Amount'" :customClass="'cursor-text'"  />
+								<Input v-model="form.addFunds.payment_amount" :type="'number'" :step=".01" :min="5.00" :max="9999" :id="'payment_amount'" :name="'Payment Amount'" :customClass="'cursor-text'"  />
 							</div>
 						</div>
 					</div>
 					
 					<div class="flex flex-col w-full m-0 p-0">
 						<div>
-							<Button type="'submit'" :customClass="'w-auto text-center justify-center items-center motify-btn-sm bg-theme-secondary-500 text-white hover:bg-theme-secondary-700 hover:text-[#F5F5F5]'">
+							<Button type="'submit'" :disabled="proxy.forms.addFunds.checkoutPending" :customClass="'w-auto text-center justify-center items-center motify-btn-sm bg-theme-secondary-500 text-white hover:bg-theme-secondary-700 hover:text-[#F5F5F5]'">
 								<div class="flex flex-row w-full items-center justify-center space-x-2 leading-[16px] outline-0">
 									<div class="flex flex-col"><svg xmlns="http://www.w3.org/2000/svg" role="img" class="flex flex-col select-none pointer-events-none" width="14px" height="14px" fill="currentColor" viewBox="0 0 16 16"><path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v1H0V4zm0 3v5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7H0zm3 2h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1a1 1 0 0 1 1-1z"/></svg></div>
 									<div class="flex flex-col">Continue to payment</div>
@@ -103,53 +103,119 @@
 				</form>
 			</div>
 		</div>
+		<div class="flex flex-col w-full relative bg-white border border-[#D1D9E4] rounded-xl p-[24px] m-0 mt-[20px] space-y-[20px]">
+			<div class="flex flex-col w-full p-0 m-0">
+				<span class="flex flex-col font-medium whitespace-pre-wrap text-[20px] leading-[24px] capitalize">History</span>
+			</div>
+			<div class="flex flex-col w-full max-w-[100%] overflow-x-auto relative">
+				<table class="table-auto md:table-fixed font-motify w-full text-left text-[14px] leading-[18px]">
+					<thead>
+						<th colspan="3">ID</th>
+						<th>Amount</th>
+						<th colspan="2">Status</th>
+						<th colspan="2">Created at</th>
+						<th colspan="3">Updated at</th>
+					</thead>
+					<tbody>
+						<tr v-for="item in props.items.data" :key="item.invoice_id">
+							<td colspan="3" class="py-[6px] lg:py-[4px]"><span class="tracking-wide" v-html="formatInvoiceId(item.invoice_id)"></span></td>
+							<td class="py-[6px] lg:py-[4px]">{{ num.format(parseFloat(item.amount) || 0) }}</td>
+							<td colspan="2" class="py-[6px] lg:py-[4px]">{{ item.status }}</td>
+							<td colspan="2" class="py-[6px] lg:py-[4px]">{{ formatDate(item.created_at) }}</td>
+							<td colspan="2" class="py-[6px] lg:py-[4px]">{{ formatDate(item.updated_at) }}</td>
+							<td class="py-[6px] lg:py-[4px]">
+								<Link :href="`/clientarea/invoices/${item.invoice_id}`" class="flex flex-col w-full lg:w-auto justify-center items-center select-none cursor-pointer no-underline transition-all duration-300">
+									<Button :type="'button'" :customClass="'motify-table-btn-sm rounded-[4px] bg-theme-secondary-500 text-white w-full capitalize text-center justify-center items-center hover:bg-theme-secondary-700 hover:text-[#F5F5F5]'">
+										View
+									</Button>
+								</Link>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="flex flex-col w-full relative">
+				<pagination :links="props.items.links" />
+			</div>
+		</div>
 	</ClientLayout>
 </template>
 <script setup>
-	import ClientLayout from '../../Layouts/ClientLayout.vue';
+	import ClientLayout from '../../../Layouts/ClientLayout.vue';
 	import { reactive, onMounted , computed} from 'vue';
 	import { usePage, useForm, Link } from '@inertiajs/vue3';
-	import Button from '../../Components/Button.vue';
-	import Input from '../../Components/Input.vue';
+	import Button from '../../../Components/Button.vue';
+	import Input from '../../../Components/Input.vue';
+	import Pagination from '../../../Components/Pagination.vue';
+	import Swal from 'sweetalert2/dist/sweetalert2.js'
+	import 'sweetalert2/dist/sweetalert2.min.css';
 
 	const props = defineProps({
-		errors: Object
+		errors: Object,
+		items: Object
 	}),
 	page = usePage(),
 	user = computed(() => page.props.user),
 
+	Toast = Swal.mixin({
+		toast: true,
+		position: 'top-right',
+		iconColor: '#FFFFFF',
+		customClass: {
+			popup: 'motify-toast'
+		},
+		showConfirmButton: false,
+		timer: 4000,
+		timerProgressBar: true
+	}),
+
 	form = {
 		addFunds: useForm({
 			'payment_method': '0',
-			'payment_amount': '10.00'
+			'payment_amount': '5.00'
 		})
 	},
 
 	proxy = reactive({
-		hideErrors: {
-			addFunds: true
+		forms: {
+			addFunds: {
+				hideErrors: true,
+				checkoutPending: false
+			}
 		}
 	}),
 
+	locale = ('object' === typeof navigator && null !== navigator && 'language' in navigator && 'string' === typeof navigator.language) ? navigator.language : 'en-US',
+
+	num = new Intl.NumberFormat(locale, {
+		style: 'currency',
+		currency: 'EUR',
+		maximumFractionDigits: 2
+	}),
+
+	formatDate = (date) => {
+		var d = new Date(date);
+		return (`${d.toLocaleDateString()} ${d.toLocaleTimeString()}`);
+	},
+
+	formatInvoiceId = (id) => {
+		var i = id.toUpperCase().replace(/([A-F0-9]{4})([A-F0-9]{4})([A-F0-9]{4})([A-F0-9]{4})([A-F0-9]{4})/g, '$1<span class="tracking-tight text-slate-950">-</span>$2<span class="tracking-tight text-slate-950">-</span>$3<span class="tracking-tight text-slate-950">-</span>$4<span class="tracking-tight text-slate-950">-</span>$5</span>');
+		return i;
+	},
+
 	submitAddFunds = () => {
-		form.servers.post(route('clientarea.order.server'), {
+		proxy.forms.addFunds.checkoutPending = true;
+		form.addFunds.post(route('clientarea.wallet.topup'), {
 			onFinish: () => {
-				proxy.forms.servers.checkoutPending = false;
+				proxy.forms.addFunds.checkoutPending = false;
 			},
 			onSuccess: () => {
-				proxy.forms.servers.hideErrors = true;
-				Swal.fire({
-					icon: 'info',
-					text: `OK`
-				});
+				proxy.forms.addFunds.hideErrors = true;
+				form.addFunds.reset();
 			},
 			onError: (errors) => {
-				proxy.forms.servers.hideErrors = false;
-				Toast.fire({
-					icon: 'error',
-					title: 'Whoops!',
-					text: `Sorry, but please check your entries and try again!`
-				});
+				proxy.forms.addFunds.hideErrors = false;
+				form.addFunds.reset('payment_method');
 			}
 		});
 	};

@@ -10,7 +10,7 @@ use App\Http\Controllers\Billing\PaymentController;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\RateLimiter;
 use App\Models\User;
-use App\Models\Invoice;
+use App\Models\Payment;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -217,12 +217,11 @@ class OrderController extends Controller
 
 			$invoice = $invoice['data'];
 			
-			Invoice::create([
-				'id'				=>	$invoice['id'],
+			Payment::create([
+				'payment_id'		=>	$invoice['id'],
 				'invoice_id'		=>	$invoice['order_id'],
 				'user_id'			=>	auth()->id(),
-				'amount_fiat'		=>	$data['subtotal'],
-				'service_type'		=>	0,
+				'amount'			=>	$data['subtotal'],
 				'status'			=>	0,
 				'updated_at'		=>	(new \DateTime($invoice['updated_at'], new \DateTimeZone('UTC'))),
 				'created_at'		=>	(new \DateTime($invoice['created_at'], new \DateTimeZone('UTC')))	

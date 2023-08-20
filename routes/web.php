@@ -57,7 +57,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 		Route::get('/invoices', [ClientController::class, 'showInvoices'])
 			->name('invoices');
 
-		Route::get('/invoice/{id}', [ClientController::class, 'showInvoice'])
+		Route::get('/invoices/{id}', [ClientController::class, 'showInvoice'])
 			->name('invoice');
 
 		Route::get('/servers', [ClientController::class, 'showServers'])
@@ -70,9 +70,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 			->name('wallet');
 
 		Route::prefix('wallet')->name('wallet.')->group(function () {
-
 			Route::post('/topup', [WalletController::class, 'store'])->name('topup');
-	
 		});
 
 		Route::get('/account', [ClientController::class, 'showAccount'])

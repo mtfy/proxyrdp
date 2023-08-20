@@ -20,10 +20,6 @@
 							<td class="whitespace-no-wrap">{{ formatDate(props.invoice.data.created_at) }}</td>
 						</tr>
 						<tr>
-							<th scope="col">Service</th>
-							<td class="whitespace-no-wrap">{{ (props.invoice.data.service === 0) ? 'RDP' : 'Proxy' }}</td>
-						</tr>
-						<tr>
 							<th scope="col">Total</th>
 							<td class="whitespace-no-wrap">{{ num.format( parseFloat(props.invoice.data.amount) || 0 ) }}</td>
 						</tr>
@@ -36,7 +32,7 @@
 			</div>
 			<div class="flex flex-col w-full relative w-full">
 				<div class="flex flex-col w-full relative justify-center items-center lg:justify-start lg:items-start w-full lg:max-w-[50%] pt-[20px]">
-					<a :href="`https://nowpayments.io/payment/?iid=${props.invoice.data.payment_id.toString()}`" class="flex flex-col w-full lg:w-auto justify-center items-center select-none cursor-pointer no-underline transition-all duration-300" target="_blank">
+					<a :href="`https://href.li/?https://nowpayments.io/payment/?iid=${props.invoice.data.payment_id.toString()}`" class="flex flex-col w-full lg:w-auto justify-center items-center select-none cursor-pointer no-underline transition-all duration-300" target="_blank">
 						<Button :type="'button'" :custom-class="'override:text-[14px] rounded-[4px] bg-theme-secondary-500 text-white w-full text-center font-medium justify-center items-center hover:bg-theme-secondary-700 hover:text-[#F5F5F5]'">
 							<div class="flex flex-row w-full items-center justify-center space-x-2 leading-[20px]">
 								<div class="flex flex-col"><svg xmlns="http://www.w3.org/2000/svg" role="img" width="20px" height="20px" fill="currentColor" class="flex flex-col select-none pointer-events-none" viewBox="0 0 24 24"><path d="M7,18c-1.1,0-1.99,0.9-1.99,2S5.9,22,7,22s2-0.9,2-2S8.1,18,7,18z M17,18c-1.1,0-1.99,0.9-1.99,2s0.89,2,1.99,2s2-0.9,2-2 S18.1,18,17,18z M8.1,13h7.45c0.75,0,1.41-0.41,1.75-1.03L21,4.96L19.25,4l-3.7,7H8.53L4.27,2H1v2h2l3.6,7.59l-1.35,2.44 C4.52,15.37,5.48,17,7,17h12v-2H7L8.1,13z M12,2l4,4l-4,4l-1.41-1.41L12.17,7L8,7l0-2l4.17,0l-1.59-1.59L12,2z"></path></svg></div>

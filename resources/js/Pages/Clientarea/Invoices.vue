@@ -1,5 +1,5 @@
 <template>
-	<ClientLayout :user="user" :activePage="5">
+	<ClientLayout :user="user" :activePage="2">
 		<div class="flex flex-col w-full p-0 m-0">
 			<span class="flex flex-col font-medium whitespace-pre-wrap text-[20px] leading-[24px] capitalize">Invoices</span>
 		</div>

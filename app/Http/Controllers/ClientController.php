@@ -37,7 +37,9 @@ class ClientController extends Controller
 			'email' => NULL,
 			'created_at' => NULL,
 			'token' => NULL,
-			'balance' => 0.00
+			'balance' => 0.00,
+			'roles' => [],
+			'permissions' => []
 		];
 
 		$user = request()->user();
@@ -51,6 +53,8 @@ class ClientController extends Controller
 			$data['created_at'] = $user['created_at']->setTimezone(new \DateTimeZone('UTC'))->getTimestamp();
 			$data['token'] = encrypt(Cookie::get('proxyrdp_session'));
 			$data['balance'] = \floatval( $user['balance'] );
+			$data['roles'] = $user->roles->pluck('name')->toArray();
+			$data['permissions'] = $user->getPermissionsViaRoles()->pluck('name')->toArray();
 		}
 
 		return $data;

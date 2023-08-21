@@ -1,5 +1,5 @@
 <template>
-	<ClientLayout :activePage="6">
+	<ClientLayout :activePage="4">
 		<div class="flex flex-col w-full p-0 m-0">
 			<span class="flex flex-col font-medium whitespace-pre-wrap text-[20px] leading-[24px] capitalize">Wallet</span>
 		</div>

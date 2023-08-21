@@ -8,7 +8,14 @@ use App\Http\Controllers\Auth\RegistrationController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RecoveryController;
 use App\Http\Controllers\Orders\OrderController;
+use App\Http\Controllers\Administration\DashboardController;
+use App\Http\Controllers\Administration\UsersController;
+use App\Http\Controllers\Administration\ServicesController;
+use App\Http\Controllers\Administration\OrdersController;
 use Inertia\Inertia;
+
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 /*
 |--------------------------------------------------------------------------
@@ -72,6 +79,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 		Route::get('/account', [ClientController::class, 'showAccount'])
 			->name('account');
+		
 		Route::prefix('account')->name('account.')->group(function () {
 
 			Route::post('password', [ClientController::class, 'passwordUpdate'])->name('password');
@@ -83,6 +91,23 @@ Route::middleware(['auth', 'verified'])->group(function () {
 	Route::prefix('payments')->name('payments.')->group(function () {
 		Route::post('currencies', [PaymentController::class, 'currencies'])->name('currencies');
 
+	});
+});
+
+Route::middleware(['auth', 'verified', 'role:Administrator'])->group(function () {
+	Route::prefix('admin')->name('admin.')->group(function () {
+		
+		Route::get('/dashboard', [DashboardController::class, 'show'])
+			->name('dashboard');
+
+		Route::get('/users', [UsersController::class, 'show'])
+			->name('users');
+
+		Route::get('/orders', [OrdersController::class, 'show'])
+			->name('orders');
+
+		Route::get('/services', [ServicesController::class, 'show'])
+			->name('services');
 	});
 });
 

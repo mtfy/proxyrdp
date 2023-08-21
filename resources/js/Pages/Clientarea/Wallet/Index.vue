@@ -14,7 +14,7 @@
 							<div class="flex flex-col w-full relative">
 								<div class="flex flex-row w-full relative">
 									<div class="flex flex-col w-9/12">
-										<span class="flex flex-col transition-colors duration-300 font-motify leading-normal text-[24px] md:text-[36px] text-[#0A0A0A] group-hover:text-[#0A0A0A75]">0.00</span>
+										<span class="flex flex-row items-center transition-colors duration-300 font-motify leading-normal text-[24px] md:text-[36px] text-[#0A0A0A] group-hover:text-[#0A0A0A75]"><span class="flex flex-col items-center">{{ (parseFloat( user.balance ) || 0).toFixed(2) }}</span><span class="flex flex-col items-center tracking-normal text-[18px] md:text-[28px] font-inter">&#xa0;&#x20ac;</span></span>
 									</div>
 									<div class="flex flex-col w-3/12 justify-center items-end select-none pointer-events-none">
 										<svg xmlns="http://www.w3.org/2000/svg" role="img" class="inline-flex transition-colors duration-300 text-amber-600 group-hover:text-amber-600/50 pointer-events-none select-none p-0 m-0" width="24px" height="24px" fill="currentColor" viewBox="0 0 16 16"><path d="M5.5 9.511c.076.954.83 1.697 2.182 1.785V12h.6v-.709c1.4-.098 2.218-.846 2.218-1.932 0-.987-.626-1.496-1.745-1.76l-.473-.112V5.57c.6.068.982.396 1.074.85h1.052c-.076-.919-.864-1.638-2.126-1.716V4h-.6v.719c-1.195.117-2.01.836-2.01 1.853 0 .9.606 1.472 1.613 1.707l.397.098v2.034c-.615-.093-1.022-.43-1.114-.9H5.5zm2.177-2.166c-.59-.137-.91-.416-.91-.836 0-.47.345-.822.915-.925v1.76h-.005zm.692 1.193c.717.166 1.048.435 1.048.91 0 .542-.412.914-1.135.982V8.518l.087.02z"/><path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14zm0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16z"/><path d="M8 13.5a5.5 5.5 0 1 1 0-11 5.5 5.5 0 0 1 0 11zm0 .5A6 6 0 1 0 8 2a6 6 0 0 0 0 12z"/></svg>
@@ -117,19 +117,25 @@
 						<th colspan="3">Updated at</th>
 					</thead>
 					<tbody>
-						<tr v-for="item in props.items.data" :key="item.invoice_id">
-							<td colspan="3" class="py-[6px] lg:py-[4px]"><span class="tracking-wide" v-html="formatInvoiceId(item.invoice_id)"></span></td>
+						<tr v-for="item in props.items.data" :key="item.token" v-if="Object.entries(props.items.data).length">
+							<td colspan="3" class="py-[6px] lg:py-[4px]"><span class="tracking-wide" v-html="formatInvoiceId(item.token)"></span></td>
 							<td class="py-[6px] lg:py-[4px]">{{ num.format(parseFloat(item.amount) || 0) }}</td>
 							<td colspan="2" class="py-[6px] lg:py-[4px]">{{ item.status }}</td>
 							<td colspan="2" class="py-[6px] lg:py-[4px]">{{ formatDate(item.created_at) }}</td>
 							<td colspan="2" class="py-[6px] lg:py-[4px]">{{ formatDate(item.updated_at) }}</td>
 							<td class="py-[6px] lg:py-[4px]">
-								<Link :href="`/clientarea/invoices/${item.invoice_id}`" class="flex flex-col w-full lg:w-auto justify-center items-center select-none cursor-pointer no-underline transition-all duration-300">
+								<Link :href="`/clientarea/invoices/${item.token}`" class="flex flex-col w-full lg:w-auto justify-center items-center select-none cursor-pointer no-underline transition-all duration-300">
 									<Button :type="'button'" :customClass="'motify-table-btn-sm rounded-[4px] bg-theme-secondary-500 text-white w-full capitalize text-center justify-center items-center hover:bg-theme-secondary-700 hover:text-[#F5F5F5]'">
-										View
+										<div class="flex flex-row w-full items-center justify-center space-x-2 leading-[16px] outline-0">
+											<div class="flex flex-col"><svg xmlns="http://www.w3.org/2000/svg" role="img" class="flex flex-col select-none pointer-events-none" width="12px" height="12px" fill="currentColor" viewBox="0 0 16 16"><path d="M16 8s-3-5.5-8-5.5S0 8 0 8s3 5.5 8 5.5S16 8 16 8zM1.173 8a13.133 13.133 0 0 1 1.66-2.043C4.12 4.668 5.88 3.5 8 3.5c2.12 0 3.879 1.168 5.168 2.457A13.133 13.133 0 0 1 14.828 8c-.058.087-.122.183-.195.288-.335.48-.83 1.12-1.465 1.755C11.879 11.332 10.119 12.5 8 12.5c-2.12 0-3.879-1.168-5.168-2.457A13.134 13.134 0 0 1 1.172 8z"/><path d="M8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5zM4.5 8a3.5 3.5 0 1 1 7 0 3.5 3.5 0 0 1-7 0z"/></svg></div>
+											<div class="flex flex-col">View</div>
+										</div>
 									</Button>
 								</Link>
 							</td>
+						</tr>
+						<tr v-else>
+							<td colspan="11"><span class="flex flex-col w-full text-center mt-5">No past records found</span></td>
 						</tr>
 					</tbody>
 				</table>

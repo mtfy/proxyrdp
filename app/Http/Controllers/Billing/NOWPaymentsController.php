@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Billing;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\Billing\NOWPaymentsController;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Http\Client\Response;
 use Illuminate\Http\Client\RequestException;
@@ -32,6 +33,17 @@ class NOWPaymentsController extends Controller
 		$this->ipn_secret = env('NOWPAYMENTS_IPN_SECRET', '');
 		$this->ipn_callback_url = env('NOWPAYMENTS_IPN_CALLBACK_URL');
 		$this->debug = (false === app()->isProduction());
+	}
+
+	
+	/**
+	 * Performs an integrity check against the received hash with our IPN secret.
+	 *
+	 * @return boolean
+	 */
+	public function ipnValidateSignature() : bool
+	{
+
 	}
 
 
@@ -234,6 +246,24 @@ class NOWPaymentsController extends Controller
 
 
 	/**
+	 * Get the actual information about the payment. You need to provide the ID of the payment in the request.
+	 * NOTE! You should make the get payment status request with the same API key that you used in the create payment request.
+	 *
+	 * @author Motify
+	 * @param  string $payment_id
+	 * @return array
+	 */
+	public function getPaymentStatus(string $payment_id) : array
+	{
+		$response = $this->httpRequest( 'payment/' . $payment_id, 'GET', [
+			'x-api-key'	=>	$this->api_token
+		], NULL, 5, 2 );
+
+		return $response;
+	}
+
+
+	/**
 	 * Creates a payment link. With this method, the customer is required to follow the generated url to complete the payment. Data must be sent as a JSON-object payload.
 	 *
 	 * @param  float  $amount
@@ -262,7 +292,8 @@ class NOWPaymentsController extends Controller
 			'order_description'		=>	$description,
 			'is_fee_paid_by_user'	=>	true,
 			'success_url'			=>	\sprintf('%s/clientarea/invoices/%s/success', url('/'), $invoice_id),
-			'cancel_url'			=>	\sprintf('%s/clientarea/invoices/%s/cancel', url('/'), $invoice_id)
+			'cancel_url'			=>	\sprintf('%s/clientarea/invoices/%s/cancel', url('/'), $invoice_id),
+			'ipn_callback_url'		=>	'https://jogiin86.xyz/debug/index.php'
 		]);
 
 		return $response;

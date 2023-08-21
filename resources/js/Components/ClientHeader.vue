@@ -24,7 +24,7 @@
 													</div>
 												</div>
 												<div class="flex flex-col p-0 m-0 justify-center items-center relative select-none cursor-pointer">
-													<span class="inline-flex capitalize w-full font-motify text-white group-hover:text-white/80 transition-all duration-300 cursor-pointer select-none truncate text-[14px] leading-[22px]"><span class="inline-flex font-medium">0.00</span>&#xa0;&#x20ac;</span>
+													<span class="inline-flex capitalize w-full font-motify text-white group-hover:text-white/80 transition-all duration-300 cursor-pointer select-none truncate text-[14px] leading-[22px]"><span class="inline-flex font-medium">{{ (parseFloat( user.balance ) || 0).toFixed(2) }}</span>&#xa0;&#x20ac;</span>
 												</div>
 											</div>
 										</button>
@@ -88,7 +88,7 @@
 													</div>
 												</div>
 												<div class="flex flex-col p-0 m-0 justify-center items-center relative select-none cursor-pointer">
-													<span class="inline-flex capitalize w-full font-motify text-white group-hover:text-white/80 transition-all duration-300 cursor-pointer select-none leading-[18px] truncate text-[12px] md:leading-[22px] md:text-[14px]"><span class="inline-flex font-medium">0.00</span>&#xa0;&#x20ac;</span>
+													<span class="inline-flex capitalize w-full font-motify text-white group-hover:text-white/80 transition-all duration-300 cursor-pointer select-none leading-[18px] truncate text-[12px] md:leading-[22px] md:text-[14px]"><span class="inline-flex font-medium">{{ (parseFloat( user.balance ) || 0).toFixed(2) }}</span>&#xa0;&#x20ac;</span>
 												</div>
 											</div>
 										</button>

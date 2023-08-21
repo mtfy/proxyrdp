@@ -97,7 +97,27 @@
 							</Link>
 						</li>
 					</ul>
-					<ul class="flex flex-row space-x-10 w-full list-none font-motify items-center" v-show="!user.guest">
+					<ul class="flex flex-row sm:space-x-3 md:space-x-5 2xl:space-x-8 w-full list-none font-motify items-center" v-show="!user.guest">
+						<li class="flex flex-col relative select-none">
+							<div class="flex flex-col w-full relative">
+								<div class="inline-block relative">
+									<Link href="/clientarea/wallet" id="motify--balance" class="flex flex-col group no-underline w-full min-h-[40px] max-h-[40px] h-[40px] relative rounded-[4px] transition-all duration-300">
+										<button type="button" class="flex flex-col w-full cursor-pointer items-center justify-center h-[40px] min-w-[40px] w-full py-[8px] px-[12px] border-0 whitespace-no-wrap text-white bg-transparent rounded-[12px] font-motify transition-colors duration-100 outline-0 z-[7997] hover:bg-theme-primary-800/50">
+											<div class="flex flex-row justify-center items-center relative whitespace-no-wrap space-x-[4px] space-y-0">
+												<div class="flex flex-col p-0 m-0 select-none leading-[0px]">
+													<div class="inline-block m-0 p-0 relative min-h-[24px] max-h-[24px] max-w-[24px] min-w-[24px] w-[24px] h-[24px] select-none">
+														<span class="inline-block m-0 p-0 overflow-hidden min-h-[24px] max-h-[24px] max-w-[24px] min-w-[24px] w-[24px] h-[24px] select-none"><svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" class="text-white group-hover:text-white/80 transition-all duration-300 inline-flex select-none pointer-events-none w-full max-h-[24px] max-w-[100%] px-0 py-[4px]" width="24px" height="24px" viewBox="0 0 24 24" fill="currentColor"><path d="M21 18v1c0 1.1-.9 2-2 2H5c-1.11 0-2-.9-2-2V5c0-1.1.89-2 2-2h14c1.1 0 2 .9 2 2v1h-9c-1.11 0-2 .9-2 2v8c0 1.1.89 2 2 2h9zm-9-2h10V8H12v8zm4-2.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5z"/></svg></span>
+													</div>
+												</div>
+												<div class="flex flex-col p-0 m-0 justify-center items-center relative select-none cursor-pointer">
+													<span class="inline-flex capitalize w-full font-motify text-white group-hover:text-white/80 transition-all duration-300 cursor-pointer select-none truncate text-[14px] leading-[22px]"><span class="inline-flex font-medium">{{ (parseFloat( user.balance ) || 0).toFixed(2)  }}</span>&#xa0;&#x20ac;</span>
+												</div>
+											</div>
+										</button>
+									</Link>
+								</div>
+							</div>
+						</li>
 						<li class="flex flex-col relative min-w-[160px]" ref="refUserMenu">
 							<div class="flex flex-col w-full relative">
 								<span class="inline-block w-full" aria-expanded="false" aria-haspopup="listbox" role="combobox">
@@ -167,6 +187,8 @@
 <script setup>
 	import { reactive, onMounted, ref, nextTick, computed } from 'vue';
 	import { Link, usePage } from '@inertiajs/vue3';
+	import tippy from 'tippy.js';
+	import 'tippy.js/dist/tippy.css';
 
 	const page = usePage(),
 	user = computed(() => page.props.user),
@@ -211,27 +233,42 @@
 		proxy.mobileMenu = !proxy.mobileMenu;
 	},
 
-	calculateUserMenuPosition = () => {
-		var containerRect = null;
+	calculateUserMenuPosition = async() => {
+		return new Promise(async(resolve) => {
+			var containerRect = null;
 
-		try {
-			containerRect = refUserMenu.value.getBoundingClientRect();
-		} catch (err) {
-			containerRect = null;
-		}
+			try {
+				containerRect = refUserMenu.value.getBoundingClientRect();
+			} catch (err) {
+				containerRect = null;
+			}
 
-		if (null !== containerRect) {
-			proxy.userMenu.pos.x = Math.round(containerRect.x);
-			proxy.userMenu.pos.y = Math.round(containerRect.y);
-		}
-	}
+			if (null !== containerRect) {
+				proxy.userMenu.pos.x = Math.round(containerRect.x);
+				proxy.userMenu.pos.y = Math.round(containerRect.y);
+			}
+
+			resolve(true);
+		});
+	},
+
+	initializeTooltip = async() => {
+		tippy('#motify--balance', {
+			'content'	:	'Balance'
+		});
+	};
 
 	onMounted(async() => {
 		window.addEventListener('resize', handleResize);
 		window.addEventListener('scroll', handleScroll);
 		handleResize();
 		handleScroll();
-		await nextTick();
-		calculateUserMenuPosition();
+		await nextTick().then(async() => {
+			await calculateUserMenuPosition().then(async() => {
+				if (!user.guest) {
+					await initializeTooltip();
+				}
+			});
+		});
 	});
 </script>

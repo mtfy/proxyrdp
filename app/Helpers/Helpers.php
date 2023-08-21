@@ -6,6 +6,17 @@ class Helpers
 {
 
 	/**
+	 * Initialize Helpers
+	 * 
+	 * @author Motify
+	 * @return void
+	 */
+	public function __construct()
+	{
+
+	}
+
+	/**
 	 * A method for generating cryptographically secure
 	 * random strings using six different pre-defined
 	 * patterns;
@@ -75,6 +86,7 @@ class Helpers
 		return $token;
 	}
 
+
     public static function displaySensitiveString(string $str)
     {
         $length = \mb_strlen($str, 'utf-8');
@@ -88,6 +100,7 @@ class Helpers
 		
 		return \mb_substr($str, 0, $length / 3, 'utf-8') . \str_repeat('x', $length / 3) . \mb_substr($str, (($length / 3 ) * 2), $length, 'utf-8');
     }
+
 
 	public static function getStringBetween(string $str, string $start, string $end) : string
 	{

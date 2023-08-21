@@ -66,6 +66,22 @@ class PaymentController extends Controller
 	}
 
 
+
+	/**
+	 * Translate the human readable text value into numeric computer readable payment status ID
+	 *
+	 * @param  string  $status
+	 * @return integer
+	 */
+	public function getPaymentStatusNumeric(string $status) : int
+	{
+		if (!\array_key_exists($status, $this->payment_status['original']))
+			return 0;
+
+		return \intval( $this->payment_status['original'][$status] );
+	}
+
+
 	/**
 	 * Generate an unique invoice identifier
 	 *

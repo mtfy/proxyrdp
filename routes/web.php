@@ -60,11 +60,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 		Route::get('/invoices/{id}', [ClientController::class, 'showInvoice'])
 			->name('invoice');
 
-		Route::get('/servers', [ClientController::class, 'showServers'])
-			->name('servers');
-
-		Route::get('/proxies', [ClientController::class, 'showProxies'])
-			->name('proxies');
+		Route::get('/services', [ClientController::class, 'showServices'])
+			->name('services');
 
 		Route::get('/wallet', [WalletController::class, 'create'])
 			->name('wallet');

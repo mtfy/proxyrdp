@@ -37,14 +37,15 @@ class WalletController extends Controller
 	 * @author Motify
 	 * @return Response
 	 */
-	public function create() : Response
+	public function create(Request $request) : Response
 	{
-		$invoices = Payment::select('id', 'invoice_id', 'amount', 'status', 'created_at', 'updated_at')->where('user_id', auth()->id())->orderByDesc('created_at')->paginate(15);
+
+		$invoices = Payment::select('token', 'invoice_id', 'amount', 'status', 'created_at', 'updated_at')->where('user_id', auth()->id())->orderByDesc('created_at')->paginate(15);
 		$items = $invoices->through(function ($invoice) {
 			$paymentController = new PaymentController();
 			return [
-				'invoice_id' => $invoice->invoice_id,
-				'payment_id' => $invoice->id,
+				'token' => $invoice->token,
+				'invoice_id' => $invoice->id,
 				'amount' => $invoice->amount,
 				'status' => $paymentController->getPaymentStatusLabel($invoice->status),
 				'created_at' => $invoice->created_at,
@@ -122,13 +123,16 @@ class WalletController extends Controller
 					}
 
 					$invoice = $invoice['data'];
+
+					$ip = request()->ip();
 			
 					Payment::create([
-						'payment_id'		=>	$invoice['id'],
-						'invoice_id'		=>	$id,
+						'token'				=>	$id,
+						'invoice_id'		=>	$invoice['id'],
 						'user_id'			=>	auth()->id(),
 						'amount'			=>	$amount,
 						'status'			=>	0,
+						'ip_address'		=>	$ip,
 						'updated_at'		=>	(new \DateTime($invoice['updated_at'], new \DateTimeZone('UTC'))),
 						'created_at'		=>	(new \DateTime($invoice['created_at'], new \DateTimeZone('UTC')))	
 					]);

@@ -216,13 +216,16 @@ class OrderController extends Controller
 			}
 
 			$invoice = $invoice['data'];
+
+			$ip = request()->ip();
 			
 			Payment::create([
-				'payment_id'		=>	$invoice['id'],
+				'iid'				=>	$invoice['id'],
 				'invoice_id'		=>	$invoice['order_id'],
 				'user_id'			=>	auth()->id(),
 				'amount'			=>	$data['subtotal'],
 				'status'			=>	0,
+				'ip_address'		=>	$ip,
 				'updated_at'		=>	(new \DateTime($invoice['updated_at'], new \DateTimeZone('UTC'))),
 				'created_at'		=>	(new \DateTime($invoice['created_at'], new \DateTimeZone('UTC')))	
 			]);

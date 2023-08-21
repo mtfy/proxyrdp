@@ -36,8 +36,10 @@ class ClientController extends Controller
 			'last_name' => NULL,
 			'email' => NULL,
 			'created_at' => NULL,
-			'token' => NULL
+			'token' => NULL,
+			'balance' => 0.00
 		];
+
 		$user = request()->user();
 
 		if (!\is_null($user)) {
@@ -48,6 +50,7 @@ class ClientController extends Controller
 			$data['email'] = $user['email'];
 			$data['created_at'] = $user['created_at']->setTimezone(new \DateTimeZone('UTC'))->getTimestamp();
 			$data['token'] = encrypt(Cookie::get('proxyrdp_session'));
+			$data['balance'] = \floatval( $user['balance'] );
 		}
 
 		return $data;
@@ -82,12 +85,12 @@ class ClientController extends Controller
 	public function showInvoices()
 	{
 
-		$invoices = Payment::select('id', 'invoice_id', 'amount', 'status', 'created_at', 'updated_at')->where('user_id', auth()->id())->orderByDesc('created_at')->paginate(15);
+		$invoices = Payment::select('token', 'invoice_id', 'amount', 'status', 'created_at', 'updated_at')->where('user_id', auth()->id())->orderByDesc('created_at')->paginate(15);
 		$items = $invoices->through(function ($invoice) {
 			$paymentController = new PaymentController();
 			return [
+				'token' => $invoice->token,
 				'invoice_id' => $invoice->invoice_id,
-				'payment_id' => $invoice->id,
 				'amount' => $invoice->amount,
 				'status' => $paymentController->getPaymentStatusLabel($invoice->status),
 				'created_at' => $invoice->created_at,
@@ -110,72 +113,72 @@ class ClientController extends Controller
 	 */
 	public function showInvoice(Request $request, string $id)
 	{
-		$invoice = Payment::select('payment_id', 'invoice_id', 'amount', 'status', 'created_at', 'updated_at')
+		$invoice = Payment::select('token', 'invoice_id', 'amount', 'status', 'currency', 'address', 'amount_crypto', 'created_at', 'updated_at')
 			->where([
 				'user_id' => auth()->id(),
-				'invoice_id' => $id
+				'token' => $id
 			])
 			->first();
+
+		$data = [
+			'ok'	=>	false,
+			'data'	=>	[
+				'token' => NULL,
+				'invoice_id' => NULL,
+				'status' => [
+					'id' => NULL,
+					'text' => NULL
+				],
+				'amount' => [
+					'fiat' => NULL,
+					'crypto' => NULL,					
+				],
+				'currency' => NULL,
+				'address' => NULL,
+				'created_at' => NULL,
+				'updated_at' => NULL
+			]
+		];
 		
-		if (!\is_null($invoice)) {
+		if ( !\is_null($invoice) )
+		{
 			$paymentController = new PaymentController();
-			$invoice = [
+			
+			$data = [
 				'ok'	=>	true,
 				'data'	=>	[
+					'token' => $invoice->token,
 					'invoice_id' => $invoice->invoice_id,
-					'payment_id' => $invoice->payment_id,
-					'amount' => $invoice->amount,
 					'status' => [
 						'id' => \intval($invoice->status),
 						'text' => $paymentController->getPaymentStatusLabel($invoice->status)
 					],
+					'amount' => [
+						'fiat' => $invoice->amount,
+						'crypto' => $invoice->amount_crypto,					
+					],
+					'currency' => $invoice->currency,
+					'address' => $invoice->address,
 					'created_at' => $invoice->created_at,
 					'updated_at' => $invoice->updated_at,
 				]
 			];
 		}
-		else
-		{
-			$invoice = [
-				'ok'	=>	false,
-				'data'	=>	[
-					'invoice_id' => NULL,
-					'payment_id' => NULL,
-					'amount' => NULL,
-					'status' => [
-						'id' => NULL,
-						'text' => NULL
-					],
-					'created_at' => NULL,
-					'updated_at' => NULL
-				]
-			];
-		}
 
 		return Inertia::render('Clientarea/Invoice', [
-			'invoice' => $invoice
+			'invoice' => $data
 		]);
 	}
 	
 
 	/**
-	 * Display the clientarea servers view
+	 * Display the clientarea services view
 	 *
 	 * @return void
 	 */
-	public function showServers()
+	public function showServices()
 	{
-		return Inertia::render('Clientarea/Servers');
-	}
-
-	/**
-	 * Display the clientarea proxies view
-	 *
-	 * @return void
-	 */
-	public function showProxies()
-	{
-		return Inertia::render('Clientarea/Proxies');
+		return Inertia::render('Clientarea/Services');
 	}
 
 	/**

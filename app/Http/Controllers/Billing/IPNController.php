@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Validator;
 use App\Helpers\Helpers;
+use App\Http\Controllers\ClientController;
 use App\Http\Controllers\Billing\NOWPaymentsController;
 use App\Http\Controllers\Billing\PaymentController;
 use App\Models\Payment;
@@ -28,6 +29,27 @@ class IPNController extends Controller
 		];
 
 		$userAgent = $request->header('User-Agent');
+		$signature = $request->header('X-NOWPAYMENTS-SIG');
+
+		if (\is_null($userAgent) || !\is_string($userAgent) || !\hash_equals('NOWPayments v1.0', $userAgent) || \is_null($signature) || !\is_string($signature))
+		{
+			$response['message'] = 'Forbidden';
+			return response()->json($response, 403);
+		}
+		
+		$NOWPayments = new NOWPaymentsController();
+		
+		$payload = request()->input();
+
+		if (\is_null($payload) || !\is_array($payload)) {
+			$payload = [];
+		}
+		
+		if (!$NOWPayments->ipnValidateSignature($signature, $payload)) {
+			$response['message'] = 'Signature mismatch';
+			return response()->json($response, 400);
+		}
+		
 
 		$validator = Validator::make(request()->all(), [
             'payment_id' => ['numeric', 'required', 'min_digits:10'],
@@ -59,9 +81,8 @@ class IPNController extends Controller
 		$payload = $validator->validated();
 
 		$paymentController = new PaymentController();
-		
-		
-		$payment = Payment::select('token', 'invoice_id', 'payment_id', 'amount', 'status', 'currency', 'address', 'amount_crypto', 'created_at', 'updated_at')
+			
+		$payment = Payment::select('token', 'invoice_id', 'payment_id', 'user_id', 'amount', 'status', 'currency', 'address', 'amount_crypto', 'created_at', 'updated_at')
 			->where('token', $payload['order_id'])
 			->first();
 
@@ -92,7 +113,7 @@ class IPNController extends Controller
 				]);
 		}
 		else if ( (!\is_null( $payment['address'] ) && !\hash_equals( $payment['address'], $payload['pay_address'] )) ||
-					(!\is_null($payment['amount']) && (\floatval($payment['amount']) !== \floatval($payload['pay_amount']))) ) {
+					(!\is_null($payment['amount_crypto']) && (\floatval($payment['amount_crypto']) !== \floatval($payload['pay_amount']))) ) {
 			Payment::where('token', $payload['order_id'])
 				->update([
 					'currency'		=>	$payload['pay_currency'],
@@ -112,7 +133,10 @@ class IPNController extends Controller
 			
 			if (2 === $payload['payment_status'])
 			{
-				// Handle set user balance
+				$clientController = new ClientController();
+				$balance = $clientController->getUserBalance($payment->user_id);
+				$balance = ($balance + \floatval( $payload['price_amount'] ));
+				$clientController->setUserBalance($payment->user_id, $balance);
 			}
 		}
 

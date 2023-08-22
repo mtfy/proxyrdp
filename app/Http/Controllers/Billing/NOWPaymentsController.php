@@ -39,11 +39,18 @@ class NOWPaymentsController extends Controller
 	/**
 	 * Performs an integrity check against the received hash with our IPN secret.
 	 *
+	 * @author Motify
+	 * @param  string  $signature
+	 * @param  array   $payload
 	 * @return boolean
 	 */
-	public function ipnValidateSignature() : bool
+	public function ipnValidateSignature(string $signature, array $payload) : bool
 	{
+		\ksort($payload);
+		$payload = \json_encode( $payload );
+		$checksum = \hash_hmac( 'sha512', $payload, $this->ipn_secret );
 
+		return \hash_equals($checksum, $signature);
 	}
 
 

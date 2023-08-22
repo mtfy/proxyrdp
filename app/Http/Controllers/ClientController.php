@@ -8,6 +8,7 @@ use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Support\Facades\Cookie;
 use App\Models\User;
+use App\Models\Product;
 use App\Models\Payment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -21,6 +22,17 @@ use App\Http\Controllers\Billing\PaymentController;
 
 class ClientController extends Controller
 {
+
+	/**
+	 * Initialize ClientController
+	 *
+	 * @author Motify
+	 */
+    public function __construct()
+	{
+
+	}
+
 
 	/**
 	 * Obtain user data for front-end
@@ -60,6 +72,50 @@ class ClientController extends Controller
 		return $data;
 	}
 
+
+	/**
+	 * Get user balance by ID
+	 *
+	 * @author Motify
+	 * @param  mixed $id
+	 * @return float
+	 */
+	public function getUserBalance($id) : float
+	{
+		$balance = 0;
+
+		$user = User::select('balance')->where(['id' => $id])->get()->toArray();
+		
+		if (0 === \count($user)) {
+			return $balance;
+		}
+
+		$balance = \floatval( $user[0]['balance'] );
+
+		return $balance;
+	}
+
+	
+	/**
+	 * Set user balance by ID
+	 *
+	 * @author Motify
+	 * @param  mixed $id
+	 * @param  float $balance
+	 * @return void
+	 */
+	public function setUserBalance($id, float $balance)
+	{
+		$user = User::select('balance')->where(['id' => $id])->first();
+
+		if (\is_null($user)) {
+			return;
+		}
+		
+		User::where(['id' => $id])->update(['balance' => $balance]);
+	}
+
+
 	/**
 	 * Display the clientarea index view
 	 *
@@ -77,7 +133,21 @@ class ClientController extends Controller
 	 */
 	public function showOrder()
 	{
-		return Inertia::render('Clientarea/Order');
+		$services = Product::select('id', 'title', 'description', 'price', 'billing')->where(['disabled' => false, 'category' => 0])->paginate(3)->through(function ($service) {
+			$description = \explode("\n", \trim($service->description));
+
+			return [
+				'id'			=>	$service->id,
+				'title'			=>	$service->title,
+				'description'	=>	$description,
+				'billing'		=>	\intval( $service->billing ),
+				'price'			=>	\floatval( $service->price )
+			];
+		});
+
+		return Inertia::render('Clientarea/Order', [
+			'proxies'	=>	$services
+		]);
 	}
 
 

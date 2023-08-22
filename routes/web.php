@@ -55,6 +55,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
 		Route::get('/', [ClientController::class, 'showIndex'])
 			->name('index');
 
+		Route::get('/balance', function(Request $request) {
+			
+		});
+
 		Route::get('/order', [ClientController::class, 'showOrder'])
 			->name('order');
 		Route::prefix('order')->name('order.')->group(function () {
@@ -97,17 +101,28 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::middleware(['auth', 'verified', 'role:Administrator'])->group(function () {
 	Route::prefix('admin')->name('admin.')->group(function () {
 		
-		Route::get('/dashboard', [DashboardController::class, 'show'])
+		Route::get('/dashboard', [DashboardController::class, 'create'])
 			->name('dashboard');
 
-		Route::get('/users', [UsersController::class, 'show'])
+		Route::get('/users', [UsersController::class, 'create'])
 			->name('users');
 
-		Route::get('/orders', [OrdersController::class, 'show'])
+		Route::get('/orders', [OrdersController::class, 'create'])
 			->name('orders');
 
-		Route::get('/services', [ServicesController::class, 'show'])
+		Route::get('/services', [ServicesController::class, 'create'])
 			->name('services');
+
+		Route::prefix('services')->name('services.')->group(function () {
+			
+			Route::get('/{id}', [ServicesController::class, 'view'])
+				->name('view');
+			
+			Route::post('/{id}', [ServicesController::class, 'edit'])
+				->name('edit');
+			
+			Route::post('/create', [ServicesController::class, 'store'])->name('create');
+		});
 	});
 });
 

@@ -1,5 +1,5 @@
 <template>
-	<ClientLayout :user="user">
+	<ClientLayout>
 		<div class="flex flex-col w-full p-0 m-0">
 			<span class="flex flex-col font-medium whitespace-pre-wrap text-[20px] leading-[24px] capitalize" v-text="(props.invoice.ok) ? 'Invoice' : 'Not found'"></span>
 		</div>

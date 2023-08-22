@@ -20,7 +20,7 @@ class DashboardController extends Controller
 	 * @author Motify
 	 * @return void
 	 */
-	public function show(Request $request)
+	public function create(Request $request)
 	{
 		$userCount = User::get()->count();
 

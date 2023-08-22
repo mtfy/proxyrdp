@@ -20,7 +20,7 @@ class OrdersController extends Controller
 	 * @author Motify
 	 * @return void
 	 */
-	public function show(Request $request)
+	public function create(Request $request)
 	{
 		return Inertia::render('Admin/Orders');
 	}

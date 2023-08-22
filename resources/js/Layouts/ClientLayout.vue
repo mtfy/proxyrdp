@@ -91,7 +91,6 @@
 	onMounted(async() => {
 		await nextTick().then(async() => {
 			proxy.admin = user.value.roles.includes('Administrator') ? true : false;
-			window.console.log(user.value.roles);
 		});
 	});
 	

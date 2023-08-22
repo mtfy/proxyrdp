@@ -223,6 +223,20 @@ body.motify {
 	font-weight: 500 !important;
 }
 
+.motify-btn-xs {
+	font-size: 12px !important;
+	font-weight: initial !important;
+	border-radius: 4px !important;
+	width: auto !important;
+}
+
+.motify-btn-icon {
+	padding: 0 !important;
+	width: 40px !important;
+	max-height: 28px !important;
+	height: 28px !important;
+}
+
 .motify-table-btn-sm {
 	font-size: 12px !important;
 	padding: 6px 15px !important;

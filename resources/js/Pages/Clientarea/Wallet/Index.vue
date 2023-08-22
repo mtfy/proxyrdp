@@ -121,8 +121,8 @@
 							<td colspan="3" class="py-[6px] lg:py-[4px]"><span class="tracking-wide" v-html="formatInvoiceId(item.token)"></span></td>
 							<td class="py-[6px] lg:py-[4px]">{{ num.format(parseFloat(item.amount) || 0) }}</td>
 							<td colspan="2" class="py-[6px] lg:py-[4px]">{{ item.status }}</td>
-							<td colspan="2" class="py-[6px] lg:py-[4px]">{{ formatDate(item.created_at) }}</td>
-							<td colspan="2" class="py-[6px] lg:py-[4px]">{{ formatDate(item.updated_at) }}</td>
+							<td colspan="2" class="py-[6px] lg:py-[4px]">{{ item.moment.created_at }}</td>
+							<td colspan="2" class="py-[6px] lg:py-[4px]">{{ item.moment.updated_at }}</td>
 							<td class="py-[6px] lg:py-[4px]">
 								<Link :href="`/clientarea/invoices/${item.token}`" class="flex flex-col w-full lg:w-auto justify-center items-center select-none cursor-pointer no-underline transition-all duration-300">
 									<Button :type="'button'" :customClass="'motify-table-btn-sm rounded-[4px] bg-theme-secondary-500 text-white w-full capitalize text-center justify-center items-center hover:bg-theme-secondary-700 hover:text-[#F5F5F5]'">
@@ -148,13 +148,14 @@
 </template>
 <script setup>
 	import ClientLayout from '../../../Layouts/ClientLayout.vue';
-	import { reactive, onMounted , computed} from 'vue';
+	import { reactive, onMounted, onBeforeUnmount, computed, nextTick} from 'vue';
 	import { usePage, useForm, Link } from '@inertiajs/vue3';
 	import Button from '../../../Components/Button.vue';
 	import Input from '../../../Components/Input.vue';
 	import Pagination from '../../../Components/Pagination.vue';
 	import Swal from 'sweetalert2/dist/sweetalert2.js'
 	import 'sweetalert2/dist/sweetalert2.min.css';
+	import moment from 'moment';
 
 	const props = defineProps({
 		errors: Object,
@@ -188,7 +189,8 @@
 				hideErrors: true,
 				checkoutPending: false
 			}
-		}
+		},
+		momentInterval : null
 	}),
 
 	locale = ('object' === typeof navigator && null !== navigator && 'language' in navigator && 'string' === typeof navigator.language) ? navigator.language : 'en-US',
@@ -200,8 +202,10 @@
 	}),
 
 	formatDate = (date) => {
-		var d = new Date(date);
-		return (`${d.toLocaleDateString()} ${d.toLocaleTimeString()}`);
+		var d = new Date(0);
+		d.setUTCSeconds(date);
+		
+		return moment(d.toISOString()).fromNow();
 	},
 
 	formatInvoiceId = (id) => {
@@ -224,7 +228,26 @@
 				form.addFunds.reset('payment_method');
 			}
 		});
+	},
+	
+	updateTimestamps = () => {
+		for (const i in props.items.data) {
+			props.items.data[i].moment.created_at = formatDate(props.items.data[i].created_at);
+			props.items.data[i].moment.updated_at = formatDate(props.items.data[i].updated_at);
+		}
 	};
 
-	onMounted(async() => {});
+	onMounted(async() => {
+		updateTimestamps();
+		await nextTick(async() => {
+			proxy.momentInterval = window.setInterval(() => {
+				updateTimestamps();
+			}, 1000);
+		});
+	});
+
+	onBeforeUnmount(async() => {
+		clearInterval(proxy.momentInterval);
+		proxy.momentInterval = null;
+	});
 </script>

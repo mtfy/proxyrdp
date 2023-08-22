@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\Billing\NOWPaymentsController;
 use App\Models\User;
+use App\Models\Payment;
 use Illuminate\Support\Facades\RateLimiter;
 use Inertia\Inertia;
 use Inertia\Response;
@@ -46,6 +47,27 @@ class PaymentController extends Controller
 	public function __construct()
 	{
 
+	}
+
+
+	/**
+	 * Find the user ID associated to a payment by its token
+	 * Returns an integer containing the user ID if found
+	 * otherwisely NULL.
+	 * 
+	 * @author Motify
+	 * @param  string $token
+	 * @return mixed
+	 */
+	public function getUserIdByToken(string $token)
+	{
+		$id = Payment::select('user_id')->where(['token' => $token])->first();
+		
+		if (!\is_null($id)) {
+			$id = \intval( $id->user_id );
+		}
+
+		return $id;
 	}
 
 

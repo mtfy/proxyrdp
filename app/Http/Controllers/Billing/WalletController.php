@@ -48,8 +48,12 @@ class WalletController extends Controller
 				'invoice_id' => $invoice->id,
 				'amount' => $invoice->amount,
 				'status' => $paymentController->getPaymentStatusLabel($invoice->status),
-				'created_at' => $invoice->created_at,
-				'updated_at' => $invoice->updated_at
+				'created_at' => \strtotime( $invoice->created_at ),
+				'updated_at' => \strtotime( $invoice->updated_at ),
+				'moment' => [
+					'created_at' => NULL,
+					'updated_at' => NULL,
+				]
 			];
 		});
 

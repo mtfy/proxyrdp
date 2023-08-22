@@ -20,8 +20,10 @@ class UsersController extends Controller
 	 * @author Motify
 	 * @return void
 	 */
-	public function show(Request $request)
+	public function create(Request $request)
 	{
+		User::select('id', 'email', 'first_name', 'last_name', 'balance', 'created_at');
+
 		return Inertia::render('Admin/Users');
 	}
 }

@@ -11,7 +11,7 @@
 							<span class="flex flex-col font-medium whitespace-pre-wrap text-[18px] leading-[28px]">Add new service</span>
 						</div>
 						<div class="flex flex-col w-full p-0 m-0 mt-[5px]">
-							<span class="text-[14px] leading-[22px] text-theme-primary-foreground-clientarea-alt">Create a new service to be listed in the <Link class="transition-colors duration-300 font-medium text-theme-primary-500 hover:text-theme-secondary-400" href="/clientarea/order">products catalog</Link>.</span>
+							<span class="text-[14px] leading-[22px] text-theme-primary-foreground-clientarea-alt">Create a new service to be listed in the <Link class="transition-colors duration-300 font-medium text-theme-primary-500 hover:text-theme-secondary-400" href="/clientarea/order">services catalog</Link>.</span>
 						</div>
 					</div>
 					<div class="flex flex-col w-full relative max-w-full lg:max-w-[50%]">

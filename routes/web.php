@@ -107,6 +107,13 @@ Route::middleware(['auth', 'verified', 'role:Administrator'])->group(function ()
 		Route::get('/users', [UsersController::class, 'create'])
 			->name('users');
 
+		Route::prefix('users')->name('users.')->group(function () {
+
+			Route::get('/{id}', [UsersController::class, 'profile'])
+				->name('profile');
+
+		});
+
 		Route::get('/orders', [OrdersController::class, 'create'])
 			->name('orders');
 

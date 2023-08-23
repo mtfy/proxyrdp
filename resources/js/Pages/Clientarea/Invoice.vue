@@ -97,6 +97,5 @@
 	};
 
 	onMounted(async() => {
-		window.console.log(props.invoice);
 	});
 </script>

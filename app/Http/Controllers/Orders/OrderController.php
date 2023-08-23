@@ -10,7 +10,9 @@ use App\Http\Controllers\Billing\PaymentController;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\RateLimiter;
 use App\Models\User;
+use App\Models\Product;
 use App\Models\Payment;
+use App\Models\Service;
 use Inertia\Inertia;
 use Inertia\Response;
 
@@ -38,6 +40,113 @@ class OrderController extends Controller
 			'6'		=>	'500'
 		]
 	];
+
+
+	/**
+	 * Display the clientarea order view
+	 *
+	 * @author Motify
+	 * @return void
+	 */
+	public function create()
+	{
+		$services = Product::select('id', 'title', 'description', 'price', 'billing')->where(['disabled' => false, 'category' => 0])->paginate(3)->through(function ($service) {
+			$description = \explode("\n", \trim($service->description));
+
+			return [
+				'id'			=>	$service->id,
+				'title'			=>	$service->title,
+				'description'	=>	$description,
+				'billing'		=>	\intval( $service->billing ),
+				'price'			=>	\floatval( $service->price )
+			];
+		});
+
+		return Inertia::render('Clientarea/Order/Index', [
+			'proxies'	=>	$services
+		]);
+	}
+
+
+	/**
+	 * Display an invidual service view
+	 *
+	 * @param  Request $request
+	 * @param  string  $id
+	 * @return void
+	 */
+	public function view(Request $request, string $id)
+	{
+		$service = Product::select('id', 'title', 'description', 'price', 'billing')->where(['id' => $id, 'disabled' => false, 'category' => 0])->first();
+		
+		if (!\is_null($service))
+			$service = $service->toArray();
+
+		return Inertia::render('Clientarea/Order/Proxy', [
+			'service'	=>	$service
+		]);
+	}
+
+	/**
+	 * Create order for specific service
+	 *
+	 * @author Motify
+	 * @param  Request $request
+	 * @param  string  $id
+	 * @return void
+	 */
+	public function createOrder(Request $request, string $id)
+	{
+		$user_id = auth()->id();
+		if (RateLimiter::remaining('create-order:' . $user_id, $perMinute = 10)) {
+			RateLimiter::hit('create-order:' . $user_id);
+
+			$service = Product::select('id', 'title', 'description', 'price', 'billing')->where(['id' => $id, 'disabled' => false, 'category' => 0])->first();
+		
+			if (\is_null($service)) {
+				return redirect()->back()->withErrors([
+					'order'	=>	'Unknown service.'
+				]);
+			}
+
+			$service = $service->toArray();
+
+			$client = new ClientController();
+			
+			$balance = $client->getUserBalance($user_id);
+			$price = \floatval( $service['price'] );
+			if ($price > $balance) {
+				return redirect()->back()->withErrors([
+					'order'	=>	'You have insufficient funds to place an order for this service. Please top up your balance in the wallet section of clientarea.'
+				]);
+			}
+
+			$service['billing'] = \intval( $service['billing'] );
+
+			$new_balance = $balance - $price;
+
+			$client->setUserBalance($user_id, $new_balance);
+
+			$ip = request()->ip();
+
+			Service::create([
+				'user_id'			=>	$user_id,
+				'pid'				=>	$service['id'],
+				'billing_amount'	=>	$price,
+				'billing_type'		=>	$service['billing'],
+				'bandwidth'			=>	($service['billing'] === 1 ? 1000 : 0),
+				'ip_address'		=>	$ip
+			]);
+			
+			return to_route('clientarea.order');
+
+		} else {
+			return redirect()->back()->withErrors([
+				'order'	=>	'You’ve reached the rate limit for this resource, try again in a moment please!'
+			]);
+		}
+	}
+
 
 	/**
      * Convert client request data into genuine data conversions

@@ -59,9 +59,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
 			
 		});
 
-		Route::get('/order', [ClientController::class, 'showOrder'])
+		Route::get('/order', [OrderController::class, 'create'])
 			->name('order');
 		Route::prefix('order')->name('order.')->group(function () {
+			
+			Route::get('/create/{id}', [OrderController::class, 'view'])->name('create');
+			Route::post('/create/{id}', [OrderController::class, 'createOrder'])->name('create');
+
 			Route::post('server', [OrderController::class, 'server'])->name('server');
 		});
 

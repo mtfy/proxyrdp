@@ -1,5 +1,5 @@
 <template>
-	<ClientLayout :user="user" :activePage="1">
+	<ClientLayout :activePage="1">
 		<div class="flex flex-col w-full p-0 m-0">
 			<span class="flex flex-col font-medium whitespace-pre-wrap text-[20px] leading-[24px] capitalize">Order</span>
 		</div>
@@ -10,7 +10,7 @@
 			<div class="flex flex-col w-full space-y-10">
 				<div class="flex flex-col w-full lg:p-2">
 					<div class="grid grid-cols-1 md:grid-cols-3 w-full relative relative gap-5 md:gap-10 ">
-						<div v-for="item in props.proxies.data" :key="item.id" class="flex flex-col flex-grow flex-shrink basis-0 w-full items-center min-h-[471px] bg-slate-50 border-[1px] border-[#b2b2b275] rounded-[12px] font-motify leading-snug text-[14px] md:text-[16px]">
+						<div v-for="item in props.proxies.data" :key="item.id" class="flex flex-col motify-card-shadow flex-grow flex-shrink basis-0 w-full items-center min-h-[471px] bg-slate-50 border-[1px] border-[#b2b2b275] rounded-[12px] font-motify leading-snug text-[14px] md:text-[16px]">
 							<div class="flex flex-col w-full p-[20px] justify-center items-center bg-theme-primary-500 rounded-t-[12px] space-y-2 min-h-[96px] max-h-[96px]">
 								<div class="flex flex-col select-none pointer-events-none">
 									<svg xmlns="http://www.w3.org/2000/svg" role="img" class="text-white inline-flex pointer-events-none select-none p-0 m-0" width="32px" height="32px" fill="currentColor" viewBox="0 0 24 24"><path d="M15.0127,9.3949l4.56982-4.56977L21,6.24261V2H16.75739l1.41088,1.41089L13.33405,8.24512A3.93757,3.93757,0,0,0,8.14288,10.9953H5.72009a2.00033,2.00033,0,1,0,.00507,2H8.14a3.94008,3.94008,0,0,0,5.20423,2.75647l4.83069,4.83069L16.75739,22H21V17.75732l-1.41089,1.41095-4.57043-4.57043a3.96651,3.96651,0,0,0,.84137-1.60254L18,13v2l3-3L18,9v2l-2.14288-.0047A3.96785,3.96785,0,0,0,15.0127,9.3949Z"></path></svg>
@@ -35,7 +35,7 @@
 							</div>
 							<div class="flex flex-col flex-grow w-full relative justify-end items-center">
 								<div class="flex flex-col w-full relative p-[20px] pt-0">
-									<Link class="flex flex-col w-full" href="#">
+									<Link class="flex flex-col w-full" :href="`/clientarea/order/create/${item.id.toString()}`">
 										<Button type="'button'" :customClass="'w-auto text-center justify-center items-center motify-btn-sm bg-theme-secondary-500 text-white hover:bg-theme-secondary-700 hover:text-[#F5F5F5]'">
 											<div class="flex flex-row w-full items-center justify-center space-x-2 leading-[16px] outline-0">
 												<div class="flex flex-col"><svg xmlns="http://www.w3.org/2000/svg" role="img" class="flex flex-col select-none pointer-events-none" width="14px" height="14px" fill="currentColor" viewBox="0 0 16 16"><path d="M0 4a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v1H0V4zm0 3v5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7H0zm3 2h1a1 1 0 0 1 1 1v1a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1v-1a1 1 0 0 1 1-1z"/></svg></div>
@@ -209,11 +209,11 @@
 	</ClientLayout>
 </template>
 <script setup>
-	import ClientLayout from '../../Layouts/ClientLayout.vue';
+	import ClientLayout from '../../../Layouts/ClientLayout.vue';
 	import { reactive, onMounted, computed, nextTick } from 'vue';
 	import { useForm, usePage, Link } from '@inertiajs/vue3';
-	import Button from '../../Components/Button.vue';
-	import Pagination from '../../Components/Pagination.vue';
+	import Button from '../../../Components/Button.vue';
+	import Pagination from '../../../Components/Pagination.vue';
 	import Swal from 'sweetalert2/dist/sweetalert2.js'
 	import 'sweetalert2/dist/sweetalert2.min.css';
 

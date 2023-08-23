@@ -53,7 +53,7 @@ class UsersController extends Controller
 	 */
 	public function profile(Request $request, string $id)
 	{
-		$user = User::select('id', 'email', 'first_name', 'last_name', 'balance', 'created_at')
+		$user = User::select('id', 'email', 'first_name', 'last_name', 'balance', 'created_at', 'updated_at')
 			->where(['id' => $id])
 			->first();
 

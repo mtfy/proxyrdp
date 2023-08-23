@@ -7,6 +7,20 @@
 			<div class="flex flex-col w-full p-0 m-0">
 				<span class="flex flex-col font-medium whitespace-pre-wrap text-[20px] leading-[24px]">Profile of {{ formatName(props.data.first_name) }}</span>
 			</div>
+			<div class="flex flex-col w-full relative mt-[18px] xl:mt-[24px]">
+				<table class="table-fixed text-left font-motify leading-loose text-[14px] lg:max-w-[50%]">
+					<tbody>
+						<tr>
+							<th scope="col" class="max-w-[33.33%] min-w-[33.33%] md:max-w-[25%] md:min-w-[25%] w-full">Registered</th>
+							<td class="whitespace-no-wrap" v-html="formatDate(props.data.created_at)"></td>
+						</tr>
+						<tr>
+							<th scope="col" class="max-w-[33.33%] min-w-[33.33%] md:max-w-[25%] md:min-w-[25%] w-full">Last updated</th>
+							<td class="whitespace-no-wrap" v-html="formatDate(props.data.updated_at)"></td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
 			<div class="flex flex-col w-full m-0 mt-[18px] xl:mt-[24px] p-0">
 				<div class="flex flex-col lg:flex-row flex-shrink flex-grow basis-0 w-full relative m-0 p-0 gap-x-0 gap-y-6 lg:gap-x-6">
 					<div class="flex flex-col flex-shrink flex-wrap flex-grow basis-0 w-full relative bg-white border border-[#D1D9E4] rounded-xl p-[24px] space-y-[20px] lg:w-6/12">
@@ -170,6 +184,11 @@
 		var buf = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
 		console.log(buf);
 		return buf;
+	},
+
+	formatDate = (date) => {
+		var d = new Date(date);
+		return `${d.toLocaleDateString()}&#xa0;${d.toLocaleTimeString()}`.replace(/\s/, '&#xa0;');
 	},
 
 	page = usePage(),

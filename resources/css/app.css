@@ -217,6 +217,16 @@ body.motify {
 	text-shadow: 1px 1px 3px #00000040;
 }
 
+.motify-card-shadow {
+	-webkit-box-shadow: rgba(71, 103, 136, 0.06) 0px 15px 30px, rgba(71, 103, 136, 0.03) 0px 8px 15px, rgba(71, 103, 136, 0.04) 0px 4px 4.5px;
+	box-shadow: rgba(71, 103, 136, 0.06) 0px 15px 30px, rgba(71, 103, 136, 0.03) 0px 8px 15px, rgba(71, 103, 136, 0.04) 0px 4px 4.5px;
+}
+
+.motify-order-table > tbody > tr > th,
+.motify-order-table > tbody > tr > td {
+	padding: 6px 0;
+}
+
 .motify-btn-sm {
 	font-size: 14px !important;
 	padding: 12px 48px !important;

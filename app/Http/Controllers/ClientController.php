@@ -9,6 +9,7 @@ use Inertia\Response;
 use Illuminate\Support\Facades\Cookie;
 use App\Models\User;
 use App\Models\Product;
+use App\Models\Service;
 use App\Models\Payment;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Validator;
@@ -126,30 +127,6 @@ class ClientController extends Controller
 		return Inertia::render('Clientarea/Index');
 	}
 
-	/**
-	 * Display the clientarea order view
-	 *
-	 * @return void
-	 */
-	public function showOrder()
-	{
-		$services = Product::select('id', 'title', 'description', 'price', 'billing')->where(['disabled' => false, 'category' => 0])->paginate(3)->through(function ($service) {
-			$description = \explode("\n", \trim($service->description));
-
-			return [
-				'id'			=>	$service->id,
-				'title'			=>	$service->title,
-				'description'	=>	$description,
-				'billing'		=>	\intval( $service->billing ),
-				'price'			=>	\floatval( $service->price )
-			];
-		});
-
-		return Inertia::render('Clientarea/Order', [
-			'proxies'	=>	$services
-		]);
-	}
-
 
 	/**
 	 * Display the clientarea invoices view
@@ -248,11 +225,30 @@ class ClientController extends Controller
 	/**
 	 * Display the clientarea services view
 	 *
+	 * @param  Request $request
 	 * @return void
 	 */
-	public function showServices()
+	public function showServices(Request $request)
 	{
-		return Inertia::render('Clientarea/Services');
+		$user_id = auth()->id();
+		$services = Service::select('id', 'user_id', 'pid', 'status', 'billing_amount', 'billing_type', 'expires_at', 'bandwidth', 'bandwidth_used', 'server_hardware', 'created_at', 'updated_at')
+			->where(['user_id' => $user_id])
+			->orderByDesc('created_at')
+			->paginate(15)
+			->through(function ($service) {
+				
+				/*return [
+					'id'				=> $invoice->token,
+					'invoice_id'		=> $invoice->invoice_id,
+					'amount'				=> $invoice->amount,
+					'status' => $paymentController->getPaymentStatusLabel($invoice->status),
+					'created_at' => $invoice->created_at,
+					'updated_at' => $invoice->updated_at
+				];*/
+			});
+
+
+		return Inertia::render('Clientarea/Services/Index');
 	}
 
 	/**

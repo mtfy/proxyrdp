@@ -43,6 +43,17 @@ class OrderController extends Controller
 
 
 	/**
+	 * Initialize OrderController
+	 * 
+	 * @author Motify
+	 */
+	public function __construct()
+	{
+
+	}
+
+
+	/**
 	 * Display the clientarea order view
 	 *
 	 * @author Motify
@@ -132,13 +143,14 @@ class OrderController extends Controller
 			Service::create([
 				'user_id'			=>	$user_id,
 				'pid'				=>	$service['id'],
+				'is_server'			=>	false,
 				'billing_amount'	=>	$price,
 				'billing_type'		=>	$service['billing'],
 				'bandwidth'			=>	($service['billing'] === 1 ? 1000 : 0),
 				'ip_address'		=>	$ip
 			]);
 			
-			return to_route('clientarea.order');
+			return to_route('clientarea.services');
 
 		} else {
 			return redirect()->back()->withErrors([
@@ -278,23 +290,76 @@ class OrderController extends Controller
 		return $subtotal;
 	}
 
+
 	/**
-     * Handle an incoming checkout request for RDPs.
-     */
-	public function server(Request $request)
+	 * Convert the server hardware properties into machine readable format
+	 *
+	 * @author Motify
+	 * @param  array  $props
+	 * @return string
+	 */
+	public function serializeServerProps(array $props) : string
 	{
-		if (RateLimiter::remaining('create-order:' . auth()->id(), $perMinute = 5)) {
-			RateLimiter::hit('create-order:' . auth()->id());
+		$data = [];
 
-			$NOWPayments = new NOWPaymentsController();
+		foreach ($props as $idx => $val) {
+			$data[] = \intval( $val );
+		}
 
-			$enabled = $NOWPayments->getStatus();
-			
-			if (!$enabled) {
-				return redirect()->back()->withErrors([
-					'cores'	=>	'Sorry, but our payment processor API is temporarily unavailable. Please try again soon.'
-				], 'servers');
-			}
+		$data = \serialize( $data );
+
+		return $data;
+	}
+
+
+	/**
+	 * Convert the machine readable server hardware properties into more human redable format
+	 *
+	 * @author Motify
+	 * @param  string $props
+	 * @return array
+	 */
+	public function unserializeServerProps(string $data) : array
+	{
+		$props = [
+			'cores'		=>	0,
+			'memory'	=>	0,
+			'storage'	=>	0,
+			'ipv4'		=>	0
+		];
+		
+		$buf = NULL;
+
+		try {
+			$buf = \unserialize( $data );
+		} catch (\Exception $ex) {
+			$buf = NULL;
+		}
+
+		if ( !\is_null( $buf ) )
+		{
+			$props['cores'] = $buf[0];
+			$props['memory'] = $buf[1];
+			$props['storage'] = $buf[2];
+			$props['ipv4'] = $buf[3];
+		}
+
+		return $props;
+	}
+
+
+	/**
+	 * Handle an incoming checkout request for RDPs.
+	 *
+	 * @param  Request $request
+	 * @author Motify
+	 * @return void
+	 */
+	public function createOrderServer(Request $request)
+	{
+		$user_id = auth()->id();
+		if (RateLimiter::remaining('create-order:' . $user_id, $perMinute = 5)) {
+			RateLimiter::hit('create-order:' . $user_id);
 
 			$validator = Validator::make(request()->all(), [
 				'cores' => ['required', 'in:2,4,6,8,10,12'],
@@ -310,38 +375,36 @@ class OrderController extends Controller
 			$validator = $validator->validated();
 
 			$data = $this->fixOrderServerParameters($validator);
-			$data['subtotal'] = $this->calculateServerPrice($data);
+			$price = $this->calculateServerPrice($data);
 
-			$id = PaymentController::generateInvoiceId();
-			$description = \sprintf('RDP [%s cores, %s GB RAM, % GB SSDs, %s IP]', $data['cores'], $data['memory'], $data['storage'], $data['ipv4']);
+			$client = new ClientController();
 			
-			$invoice = $NOWPayments->createInvoice($data['subtotal'], $id, $description);
-			
-			if (true !== $invoice['success'] || $invoice['status'] !== 200) {
-				$message = (!\is_null($invoice['error'])) ? $invoice['error'] : 'Sorry, but something went wrong. Please try again in a moment.';
+			$balance = $client->getUserBalance($user_id);
+
+			if ($price > $balance) {
 				return redirect()->back()->withErrors([
-					'cores'	=>	$message
+					'cores'	=>	'You have insufficient funds to place an order for this service. Please top up your balance in the wallet section of clientarea.'
 				], 'servers');
 			}
 
-			$invoice = $invoice['data'];
+			$new_balance = $balance - $price;
+
+			$client->setUserBalance($user_id, $new_balance);
 
 			$ip = request()->ip();
-			
-			Payment::create([
-				'iid'				=>	$invoice['id'],
-				'invoice_id'		=>	$invoice['order_id'],
-				'user_id'			=>	auth()->id(),
-				'amount'			=>	$data['subtotal'],
-				'status'			=>	0,
-				'ip_address'		=>	$ip,
-				'updated_at'		=>	(new \DateTime($invoice['updated_at'], new \DateTimeZone('UTC'))),
-				'created_at'		=>	(new \DateTime($invoice['created_at'], new \DateTimeZone('UTC')))	
+
+			Service::create([
+				'user_id'			=>	$user_id,
+				'pid'				=>	NULL,
+				'is_server'			=>	true,
+				'billing_amount'	=>	$price,
+				'billing_type'		=>	0,
+				'bandwidth'			=>	0,
+				'server_hardware'	=>	$this->serializeServerProps($data),
+				'ip_address'		=>	$ip
 			]);
-
-			dd($invoice);
-
-
+			
+			return to_route('clientarea.services');
 
 		} else {
 			return redirect()->back()->withErrors([

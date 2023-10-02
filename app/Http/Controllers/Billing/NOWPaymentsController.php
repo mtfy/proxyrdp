@@ -177,7 +177,9 @@ class NOWPaymentsController extends Controller
 		$response = $this->httpRequest(
 			'status'
 		);
-		return ($response['success'] !== false && \array_key_exists('message', $response['data']) && $response['data']['message'] === 'OK');
+		return ($response['success'] !== false
+				&& \array_key_exists('message', $response['data'])
+				&& $response['data']['message'] === 'OK');
 	}
 
 	
@@ -273,6 +275,7 @@ class NOWPaymentsController extends Controller
 	/**
 	 * Creates a payment link. With this method, the customer is required to follow the generated url to complete the payment. Data must be sent as a JSON-object payload.
 	 *
+	 * @author Motify
 	 * @param  float  $amount
 	 * @param  string $invoice_id
 	 * @param  string $description
@@ -300,7 +303,7 @@ class NOWPaymentsController extends Controller
 			'is_fee_paid_by_user'	=>	true,
 			'success_url'			=>	\sprintf('%s/clientarea/invoices/%s/success', url('/'), $invoice_id),
 			'cancel_url'			=>	\sprintf('%s/clientarea/invoices/%s/cancel', url('/'), $invoice_id),
-			'ipn_callback_url'		=>	'https://jogiin86.xyz/debug/index.php'
+			'ipn_callback_url'		=>	$this->ipn_callback_url
 		]);
 
 		return $response;

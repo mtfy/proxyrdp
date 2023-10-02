@@ -55,6 +55,16 @@ body.motify {
 	font-family: 'Motify Pro', -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
 }
 
+body, html {
+    height: 100%;
+    width: 100%;
+	background: #F2F4F9;
+}
+
+#app {
+	margin: 0px;
+}
+
 .motify-container {
 	display: -ms-flexbox;
     display: flex;
@@ -66,6 +76,10 @@ body.motify {
 	padding: 0;
 	max-width: 100%;
 	width: 100%;
+}
+
+.motify-grid-background {
+	z-index: 0;
 }
 
 .motify-grid-background::before {
@@ -217,6 +231,10 @@ body.motify {
 	text-shadow: 1px 1px 3px #00000040;
 }
 
+.motify-text-shadow-services--status {
+	text-shadow: 2px 1px 1px #00000050;
+}
+
 .motify-card-shadow {
 	-webkit-box-shadow: rgba(71, 103, 136, 0.06) 0px 15px 30px, rgba(71, 103, 136, 0.03) 0px 8px 15px, rgba(71, 103, 136, 0.04) 0px 4px 4.5px;
 	box-shadow: rgba(71, 103, 136, 0.06) 0px 15px 30px, rgba(71, 103, 136, 0.03) 0px 8px 15px, rgba(71, 103, 136, 0.04) 0px 4px 4.5px;
@@ -297,6 +315,25 @@ body.motify {
 .motify-table > tbody > tr > td {
 	padding: 5px 10px;
 }
+
+.motify-table-md > thead > tr > th,
+.motify-table-md > tbody > tr > td {
+	padding: 14px 10px;
+}
+
+.motify-table-md > thead > tr.odd,
+.motify-table-md > tbody > tr.odd {
+	background: #f3f4f6;
+}
+
+input.motify-input:focus {
+	outline:none !important;
+    outline-width: 0 !important;
+    box-shadow: none !important;
+    -moz-box-shadow: none !important;
+    -webkit-box-shadow: none !important;
+}
+
 
 /*********************************************
 	[BEGIN] Tippy.js

@@ -71,7 +71,7 @@
 					<div class="flex flex-col md:flex-row w-full">
 						<div class="flex flex-col w-full md:w-6/12">
 							<div class="flex flex-col w-full select-none justify-center items-center">
-								<img width="607" height="422" src="./../../media/vps-illustration.png" class="inline-flex select-none pointer-events-none max-w-[100%]" alt="Virtual Private Server" decoding="async" loading="lazy" srcset="./../../media/vps-illustration.png 807w, ./../../media/vps-illustration-300x231.png 300w, ./../../media/vps-illustration-768x592.png 768w, ./../../media/vps-illustration-360x277.png 360w" sizes="(max-width: 607px) 100vw, 607px" />
+								<img width="607" height="422" :src="vpsIllustration" class="inline-flex select-none pointer-events-none max-w-[100%]" alt="Virtual Private Server" decoding="async" loading="lazy" />
 							</div>
 						</div>
 						<div class="flex flex-col w-full mt-8 md:mt-0 md:w-6/12">
@@ -90,7 +90,7 @@
 						</div>
 						<div class="flex flex-col w-full md:w-6/12">
 							<div class="flex flex-col w-full select-none justify-center items-center">
-								<img width="560" height="508" src="./../../media/proxy-server-concept-illustration.png" class="inline-flex select-none pointer-events-none max-w-[100%]" alt="Proxies" decoding="async" loading="lazy" title="" srcset="./../../media/proxy-server-concept-illustration.png 760w, ./../../media/proxy-server-concept-illustration-300x279.png 300w, ./../../media/proxy-server-concept-illustration-360x335.png 360w" sizes="(max-width: 560px) 100vw, 560px" />
+								<img width="560" height="508" :src="proxyIllustration" class="inline-flex select-none pointer-events-none max-w-[100%]" alt="Proxies" decoding="async" loading="lazy" />
 							</div>
 						</div>
 					</div>
@@ -249,6 +249,8 @@
 	import Button from '../Components/Button.vue';
 	import { Link, usePage } from '@inertiajs/vue3'
 	import { computed } from 'vue';
+	import vpsIllustration from './../../media/vps-illustration.png';
+	import proxyIllustration from './../../media/proxy-server-concept-illustration.png';
 	
 	const page = usePage(),
 	user = computed(() => page.props.user);

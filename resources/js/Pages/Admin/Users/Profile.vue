@@ -5,7 +5,7 @@
 		</div>
 		<div class="flex flex-col w-full p-0 m-0" v-else>
 			<div class="flex flex-col w-full p-0 m-0">
-				<span class="flex flex-col font-medium whitespace-pre-wrap text-[20px] leading-[24px]">Profile of {{ formatName(props.data.first_name) }}</span>
+				<span class="flex flex-col font-medium whitespace-pre-wrap text-[20px] leading-[24px]">Profile of {{ formatName(props.data.username) }}</span>
 			</div>
 			<div class="flex flex-col w-full relative mt-[18px] xl:mt-[24px]">
 				<table class="table-fixed text-left font-motify leading-loose text-[14px] lg:max-w-[50%]">
@@ -29,11 +29,11 @@
 								<span class="flex flex-col font-medium whitespace-pre-wrap text-[18px] leading-[28px]">Edit profile</span>
 							</div>
 							<div class="flex flex-col w-full p-0 m-0 mt-[5px]">
-								<span class="text-[14px] leading-[22px] text-theme-primary-foreground-clientarea-alt">Create a new service to be listed in the <Link class="transition-colors duration-300 font-medium text-theme-primary-500 hover:text-theme-secondary-400" href="/clientarea/order">services catalog</Link>.</span>
+								<span class="text-[14px] leading-[22px] text-theme-primary-foreground-clientarea-alt">Update profile information for this user.</span>
 							</div>
 						</div>
 						<div class="flex flex-col w-full relative flex-grow">
-							<div class="flex flex-col w-full mb-4 mt-2 p-0 relative transition-all ease-in-out duration-300" v-if="('editProfile' in props.errors && Object.values(props.errors.editProfile).length !== 0) && !proxy.forms.editProfile.hideErrors">
+							<div class="flex flex-col w-full m-0 mb-4 p-0 relative transition-all ease-in-out duration-300" v-if="('editProfile' in props.errors && Object.values(props.errors.editProfile).length !== 0) && !proxy.forms.editProfile.hideErrors">
 								<div class="flex flex-col w-full bg-red-200 px-[30px] py-[15px] border border-red-400 rounded-sm">
 									<div class="flex flex-col w-full items-start justify-start">
 										<span class="flex flex-col font-motify font-semibold whitespace-pre-wrap text-slate-800 text-[12px] leading-[18px] md:text-[14px] md:leading-[22px]">The following error(s) needs to be corrected:</span>
@@ -47,23 +47,11 @@
 									</div>
 								</div>
 							</div>
-							<form class="flex flex-col w-full relative space-y-[20px] flex-grow">
-								<div class="flex flex-col md:flex-row w-full relative space-y-[20px] md:space-x-[30px] md:space-y-0">
-									<div class="flex flex-col w-full relative m-0 p-0 md:w-6/12">
-										<div class="flex flex-col w-full relative m-0 p-0">
-											<div class="flex flex-col w-full m-0 p-0">
-												<label class="flex flex-col font-motify font-medium w-full capitalize text-slate-950 text-[12px] leading-[18px] md:text-[14px] md:leading-[22px]" for="service_title">First name</label>
-												<Input v-model="form.editProfile.first_name" :type="'text'" :maxlength="64" :id="'first_name'" :name="'First Name'" :customClass="'cursor-text'" :autocomplete="'off'"  />
-											</div>
-										</div>
-									</div>
-									<div class="flex flex-col w-full relative m-0 p-0 md:w-6/12">
-										<div class="flex flex-col w-full relative m-0 p-0">
-											<div class="flex flex-col w-full m-0 p-0">
-												<label class="flex flex-col font-motify font-medium w-full capitalize text-slate-950 text-[12px] leading-[18px] md:text-[14px] md:leading-[22px]" for="last_name">Last name</label>
-												<Input v-model="form.editProfile.last_name" :type="'text'" :maxlength="64" :id="'last_name'" :name="'Last Name'" :customClass="'cursor-text'" :autocomplete="'off'"  />
-											</div>
-										</div>
+							<form class="flex flex-col w-full relative space-y-[20px] flex-grow" @submit.prevent="submitEditProfile">
+								<div class="flex flex-col w-full relative m-0 p-0">
+									<div class="flex flex-col w-full m-0 p-0">
+										<label class="flex flex-col font-motify font-medium w-full capitalize text-slate-950 text-[12px] leading-[18px] md:text-[14px] md:leading-[22px]" for="useername">Username</label>
+										<Input v-model="form.editProfile.username" :type="'text'" :maxlength="16" :id="'username'" :name="'Username'" :customClass="'cursor-text'" :autocomplete="'off'"  />
 									</div>
 								</div>
 								<div class="flex flex-col md:flex-row w-full relative space-y-[20px] md:space-x-[30px] md:space-y-0">
@@ -71,7 +59,7 @@
 										<div class="flex flex-col w-full relative m-0 p-0">
 											<div class="flex flex-col w-full m-0 p-0">
 												<label class="flex flex-col font-motify font-medium w-full capitalize text-slate-950 text-[12px] leading-[18px] md:text-[14px] md:leading-[22px]" for="balance">Balance</label>
-												<Input v-model="form.editProfile.balance" :type="'number'" :id="'balance'" :name="'Balance'" :customClass="'cursor-text'" :autocomplete="'off'"  />
+												<Input v-model="form.editProfile.balance" :type="'number'" :id="'balance'" :name="'Balance'" :step="0.01" :customClass="'cursor-text'" :autocomplete="'off'"  />
 											</div>
 										</div>
 									</div>
@@ -134,8 +122,8 @@
 							</div>
 							<form class="flex flex-col w-full relative space-y-[20px] flex-grow">
 								<div class="flex flex-col w-[10px] max-w-[10px] m-0 p-0 absolute z-[-1394] invisible" aria-hidden="true" style="left: -99219px !important; top: 42.66vh !important">
-									<label class="flex flex-col font-motify font-medium max-w-[10px] min-w-[10px] w-full capitalize text-slate-950 text-[12px] leading-[18px] md:text-[14px] md:leading-[22px]  absolute z-[-1394]" for="username" aria-hidden="true" style="left: -99219px !important; top: 42.66vh !important">Email</label>
-									<input type="hidden" class="flex flex-col max-w-[10px] min-w-[10px] w-full absolute z-[-1394]" :value="props.data.email" autocomplete="username" aria-autocomplete="username" name="Username" id="username" aria-hidden="true" style="left: -99219px !important; top: 42.66vh !important" />
+									<label class="flex flex-col font-motify font-medium max-w-[10px] min-w-[10px] w-full capitalize text-slate-950 text-[12px] leading-[18px] md:text-[14px] md:leading-[22px]  absolute z-[-1394]" for="auth_username" aria-hidden="true" style="left: -99219px !important; top: 42.66vh !important">Email</label>
+									<input type="hidden" class="flex flex-col max-w-[10px] min-w-[10px] w-full absolute z-[-1394]" :value="props.data.email" autocomplete="username" aria-autocomplete="username" name="Auth Username" id="auth_username" aria-hidden="true" style="left: -99219px !important; top: 42.66vh !important" />
 								</div>
 								<div class="flex flex-col w-full relative m-0 p-0">
 									<div class="flex flex-col w-full m-0 p-0">
@@ -174,39 +162,53 @@
 	import Button from '../../../Components/Button.vue';
 	import Input from '../../../Components/Input.vue';
 	import Checkbox from '../../../Components/Checkbox.vue';
+	import Swal from 'sweetalert2/dist/sweetalert2.js'
+	import 'sweetalert2/dist/sweetalert2.min.css';
+	import moment from 'moment';
 
 	const props = defineProps({
 		data: Object,
 		errors: Object
 	}),
 
+	Toast = Swal.mixin({
+		toast: true,
+		position: 'top-right',
+		iconColor: '#FFFFFF',
+		customClass: {
+			popup: 'motify-toast'
+		},
+		showConfirmButton: false,
+		timer: 4000,
+		timerProgressBar: true
+	}),
+
 	formatName = (name) => {
 		var buf = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
-		console.log(buf);
 		return buf;
 	},
 
 	formatDate = (date) => {
-		var d = new Date(date);
-		return `${d.toLocaleDateString()}&#xa0;${d.toLocaleTimeString()}`.replace(/\s/, '&#xa0;');
+		var d = new Date(0);
+		d.setUTCSeconds(date);
+		return moment(d.toISOString()).format('YYYY-MM-DD HH:mm:ss').replace(/\s/, '&#xa0;');
 	},
 
 	page = usePage(),
 	user = computed(() => page.props.user),
 
-	form = useForm({
-		editProfile: {
-			first_name: props.data.first_name,
-			last_name: props.data.last_name,
+	form =  {
+		editProfile: useForm({
+			username: props.data.username,
 			email: props.data.email,
 			balance: (parseFloat(props.data.balance) || 0).toFixed(2),
 			admin: (props.data.roles.includes('Administrator') ? true : false)
-		},
-		authentication: {
+		}),
+		authentication: useForm({
 			password: '',
 			password_confirmation: ''
-		}
-	}),
+		})
+	},
 
 	proxy = reactive({
 		forms: {
@@ -219,7 +221,27 @@
 				hideErrors: true
 			}
 		}
-	});
+	}),
+
+	submitEditProfile = () => {
+		proxy.forms.editProfile.pendingSubmit = true;
+		form.editProfile.post(route('admin.users.edit', [props.data.id]), {
+			onFinish: () => {
+				proxy.forms.editProfile.pendingSubmit = false;
+			},
+			onSuccess: () => {
+				Toast.fire({
+					icon: 'success',
+					title: 'Success',
+					text: `Successfully edited @${ formatName( props.data.username ).toLowerCase() }’s profile.`
+				});
+			},
+			onError: (errors) => {
+				proxy.forms.editProfile.hideErrors = false;
+				proxy.forms.editProfile.pendingSubmit = false;
+			}
+		});
+	};
 
 	onMounted(async() => {
 		

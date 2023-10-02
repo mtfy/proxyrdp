@@ -17,16 +17,23 @@ use Illuminate\Http\RedirectResponse;
 class LoginController extends Controller
 {
 	/**
-     * Display the login view.
-     */
+	 * Display the login view.
+	 *
+	 * @author Motify
+	 * @return Response
+	 */
     public function create() : Response
 	{
 		return Inertia::render('Auth/Login');
 	}
 
 	/**
-     * Handle an incoming authentication request.
-     */
+	 * Handle an incoming authentication request.
+	 *
+	 * @author Motify
+	 * @param  Request          $request
+	 * @return RedirectResponse
+	 */
     public function store(Request $request): RedirectResponse
     {
 			$validator = Validator::make(request()->all(), [
@@ -34,7 +41,8 @@ class LoginController extends Controller
 				'password' => ['required', 'string']
 			]);
 
-			if ($validator->fails()) {
+			if ($validator->fails())
+			{
 				return redirect()->back()->withErrors($validator->errors());
 			}
 
@@ -59,8 +67,11 @@ class LoginController extends Controller
     }
 
     /**
-     * Destroy an authenticated session.
-     */
+	 * Destroy an authenticated session.
+	 *
+	 * @param  Request          $request
+	 * @return RedirectResponse
+	 */
     public function destroy(Request $request): RedirectResponse
     {
         Auth::guard('web')->logout();

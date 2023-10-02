@@ -4,16 +4,13 @@
 			<span class="flex flex-col font-medium whitespace-pre-wrap text-[20px] leading-[24px] capitalize">Users</span>
 		</div>
 		<div class="flex flex-col w-full relative bg-white border border-[#D1D9E4] rounded-xl p-[24px] m-0 mt-[20px] space-y-[20px]">
-			<div class="flex flex-col w-full p-0 m-0">
-				<span class="flex flex-col font-medium whitespace-pre-wrap text-[20px] leading-[24px] capitalize">Users</span>
-			</div>
 			<div class="flex flex-col w-full max-w-[100%] overflow-x-auto relative">
-				<DataTable :data="props.users.data" :options="proxy.dataTables.options" class="display motify-table table-auto md:table-fixed font-motify w-full text-left text-[14px] leading-[18px]">
+				<DataTable :data="props.users.data" :options="proxy.dataTables.options" class="display motify-table-md table-auto md:table-fixed font-motify w-full text-left text-[14px] leading-[18px]">
 					<thead>
 						<tr>
 							<th>ID</th>
 							<th>Email</th>
-							<th>Full name</th>
+							<th>Username</th>
 							<th>Balance</th>
 							<th class="text-center">Admin</th>
 							<th>Registered</th>
@@ -31,11 +28,10 @@
 	import ClientLayout from '../../../Layouts/ClientLayout.vue';
 	import { reactive, onMounted, computed, nextTick } from 'vue';
 	import { usePage, Link } from '@inertiajs/vue3';
-	import Button from '../../../Components/Button.vue';
-	import Input from '../../../Components/Input.vue';
 	import Pagination from '../../../Components/Pagination.vue';
 	import DataTable from 'datatables.net-vue3';
 	import DataTablesCore from 'datatables.net';
+	import moment from 'moment';
 
 	DataTable.use(DataTablesCore);
 
@@ -51,17 +47,6 @@
 		maximumFractionDigits: 2
 	}),
 
-	formatName = (name) => {
-		var buf = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
-		console.log(buf);
-		return buf;
-	},
-
-	formatDate = (date) => {
-		var d = new Date(date);
-		return `${d.toLocaleDateString()}&#xa0;${d.toLocaleTimeString()}`.replace(/\s/, '&#xa0;');
-	},
-
 	page = usePage(),
 	user = computed(() => page.props.user),
 
@@ -76,7 +61,10 @@
 						data: 'id',
 						width: '10%',
 						render : (data, type, row) => {
-							return `<a class="transition-colors duration-300 no-underline outline-0 text-blue-700 hover:text-blue-400" href="/admin/users/${row.id.toString()}" target="_blank">${row.id}</a>`;
+							if ( 'display' === type ) {
+								return `<a class="transition-colors duration-300 no-underline outline-0 text-blue-700 hover:text-blue-400" href="/admin/users/${row.id.toString()}" target="_blank">${row.id}</a>`;
+							}
+							return row.id;
 						}
 					},
 					{
@@ -90,13 +78,13 @@
 						}
 					},
 					{
-						data: 'first_name',
+						data: 'username',
 						width: '20%',
 						render : (data, type, row) => {
 							if ( 'display' === type ) {
-								return `${formatName(row.first_name)}&#xa0;${formatName(row.last_name)}`;
+								return `<a class="transition-colors duration-300 no-underline outline-0 text-blue-700 hover:text-blue-400" href="/admin/users/${row.id.toString()}" target="_blank"">${row.username}</a>`
 							}
-							return `${formatName(row.first_name)} ${formatName(row.last_name)}`;
+							return row.username;
 						}
 					},
 					{
@@ -127,7 +115,9 @@
 						data: 'created_at',
 						render : (data, type, row) => {
 							if ( 'display' === type ) {
-								return `${formatDate( row.created_at )}`;
+								var d = new Date(0);
+								d.setUTCSeconds(row.created_at);
+								return moment(d.toISOString()).format('YYYY-MM-DD HH:mm:ss').replace(/\s/, '&#xa0;');
 							}
 							return row.created_at;
 						}

@@ -116,6 +116,13 @@ class PaymentController extends Controller
 	}
 
 
+	/**
+	 * Fetch the currencies
+	 *
+	 * @author Motify
+	 * @param  Request $request
+	 * @return void
+	 */
 	public function currencies(Request $request)
 	{
 		$response = [
@@ -126,22 +133,37 @@ class PaymentController extends Controller
 
 		if (RateLimiter::remaining('get-currencies:' . auth()->id(), $perMinute = 5)) {
 			RateLimiter::hit('get-currencies:' . auth()->id());
+
+			// Initialize NOWPayments API wrapper
 			$NOWPayments = new NOWPaymentsController();
+
+			// Fetch the status for NOWPayments API endpoint
 			$enabled = $NOWPayments->getStatus();
-			if (!$enabled) {
+
+			if (!$enabled)
+			{
 				$response['message'] = 'Sorry, but our payment processor API is temporarily unavailable. Please try again soon.';
 				return response(\json_encode($response), 200)->header('Content-Type', 'application/json');
 			}
 			
+			// Get the available currencies from NOWPayments API
 			$currencies = $NOWPayments->getMerchantCurrencies();
-			if (!$currencies['success']) {
+
+			if (!$currencies['success'])
+			{
 				$response['message'] = 'Sorry, but our payment processor API is temporarily unavailable. Please try again soon.';
-			} else {
+			}
+			else
+			{
 				$response['success'] = true;
 				$response['data'] = $currencies['data'];
 			}
+
 			return response(\json_encode($response), 200)->header('Content-Type', 'application/json');
-		} else {
+
+		}
+		else
+		{
 			$response['message'] = 'You’ve reached the rate limit for this resource, try again in a moment please!';
 			return response(\json_encode($response), 200)->header('Content-Type', 'application/json');
 		}

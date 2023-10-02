@@ -19,7 +19,10 @@ use Illuminate\Validation\Rules;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\Http\RedirectResponse;
 use App\Http\Controllers\Billing\NOWPaymentsController;
+use App\Http\Controllers\Orders\OrderController;
 use App\Http\Controllers\Billing\PaymentController;
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 class ClientController extends Controller
 {
@@ -45,11 +48,9 @@ class ClientController extends Controller
 		$data = [
 			'guest'	=> true,
 			'id' =>	NULL,
-			'first_name' => NULL,
-			'last_name' => NULL,
+			'username' => NULL,
 			'email' => NULL,
 			'created_at' => NULL,
-			'token' => NULL,
 			'balance' => 0.00,
 			'roles' => [],
 			'permissions' => []
@@ -60,11 +61,9 @@ class ClientController extends Controller
 		if (!\is_null($user)) {
 			$data['guest'] = false;
 			$data['id'] = $user['id'];
-			$data['first_name'] = $user['first_name'];
-			$data['last_name'] = $user['last_name'];
+			$data['username'] = $user['username'];
 			$data['email'] = $user['email'];
 			$data['created_at'] = $user['created_at']->setTimezone(new \DateTimeZone('UTC'))->getTimestamp();
-			$data['token'] = encrypt(Cookie::get('proxyrdp_session'));
 			$data['balance'] = \floatval( $user['balance'] );
 			$data['roles'] = $user->roles->pluck('name')->toArray();
 			$data['permissions'] = $user->getPermissionsViaRoles()->pluck('name')->toArray();
@@ -120,11 +119,21 @@ class ClientController extends Controller
 	/**
 	 * Display the clientarea index view
 	 *
+	 * @param  Request $request
 	 * @return void
 	 */
-	public function showIndex()
+	public function showIndex(Request $request)
 	{
-		return Inertia::render('Clientarea/Index');
+		$services = Service::select('id')->where(['user_id' => auth()->id(), 'status' => 1])->get()->count();
+		$invoices = Payment::select('token')->where(['user_id' => auth()->id(), 'status' => 0])->get()->count();
+		
+		
+		return Inertia::render('Clientarea/Index', [
+			'statistics'	=>	[
+				'invoices'	=>	$invoices,
+				'services'	=>	$services
+			]
+		]);
 	}
 
 
@@ -231,25 +240,150 @@ class ClientController extends Controller
 	public function showServices(Request $request)
 	{
 		$user_id = auth()->id();
-		$services = Service::select('id', 'user_id', 'pid', 'status', 'billing_amount', 'billing_type', 'expires_at', 'bandwidth', 'bandwidth_used', 'server_hardware', 'created_at', 'updated_at')
-			->where(['user_id' => $user_id])
+		$services = Service::select('services.id', 'services.pid', 'services.status', 'services.is_server', 'products.title', 'products.category', 'services.billing_amount', 'services.billing_type', 'services.expires_at', 'services.bandwidth', 'services.bandwidth_used', 'services.server_hardware', 'services.created_at', 'services.updated_at')
+			->leftJoin('products', function($join) {
+				$join->on('services.pid', '=', 'products.id');
+			})
+			->where(['services.user_id' => $user_id])
 			->orderByDesc('created_at')
 			->paginate(15)
 			->through(function ($service) {
+				$is_server = ($service->is_server !== 0) ? true : false;
+
+				$title = 'N/A';
+				$hardware = NULL;
+
+				if ($is_server)
+				{
+					if ( !\is_null($service->server_hardware))
+					{
+						$orderController = new OrderController();
+						$hardware = $orderController->unserializeServerProps( $service->server_hardware );
+
+						$title = \sprintf('RDP - %d cores, %d GB, %d GB SSD', $hardware['cores'], $hardware['memory'], $hardware['storage']);
+					}
+					else
+						$title = 'RDP';
+				}
+				else
+					$title = ( !\is_null( $service->title ) ) ? $service->title : 'N/A';
+
 				
-				/*return [
-					'id'				=> $invoice->token,
-					'invoice_id'		=> $invoice->invoice_id,
-					'amount'				=> $invoice->amount,
-					'status' => $paymentController->getPaymentStatusLabel($invoice->status),
-					'created_at' => $invoice->created_at,
-					'updated_at' => $invoice->updated_at
-				];*/
+				return [
+					'id'				=>	$service->id,
+					'pid'				=>	$service->pid,
+					'title'				=>	$title,
+					'status'			=>	$service->status,
+					'billing_amount'	=>	$service->billing_amount,
+					'billing_type'		=>	$service->billing_type,
+					'expires_at'		=>	(!\is_null( $service->expires_at )) ? \strtotime( $service->expires_at ) : NULL,
+					'bandwidth'			=>	[
+						'total'			=>	\floatval( $service->bandwidth ),
+						'used'			=>	\floatval( $service->bandwidth_used )
+					],
+					'is_server'			=>	$is_server,
+					'server'			=>	[
+						'hardware'		=>	$hardware
+					],
+					'created_at'		=>	\strtotime( $service->created_at )
+				];
 			});
 
 
-		return Inertia::render('Clientarea/Services/Index');
+		return Inertia::render('Clientarea/Services/Index', [
+			'services'	=>	$services
+		]);
 	}
+
+
+	/**
+	 * Display an invidual service view for client
+	 *
+	 * @author Motifys
+	 * @param  Request $request
+	 * @param  string  $id
+	 * @return void
+	 */
+	public function showService(Request $request, string $id)
+	{
+
+		$user = $request->user();
+
+		$service = Service::select('services.id', 'services.user_id', 'users.username', 'users.email', 'services.pid', 'services.status', 'services.is_server', 'products.title', 'products.description', 'products.category', 'services.billing_amount', 'services.billing_type', 'services.expires_at', 'services.bandwidth', 'services.bandwidth_used', 'services.server_hardware', 'services.data', 'services.created_at', 'services.updated_at')
+			->leftJoin('products', function($join) {
+				$join->on('services.pid', '=', 'products.id');
+			})
+			->leftJoin('users', function($join) {
+				$join->on('services.user_id', '=', 'users.id');
+			})
+			->where(['services.id' => $id])
+			->first();
+
+		$data = NULL;
+
+		if ( !\is_null( $service ) )
+		{
+
+			$service_uid = \intval( $service->user_id );
+			$uid = auth()->id();
+
+			if ($uid === $service_uid || $user->hasRole('Administrator'))
+			{
+				$is_server = ($service->is_server !== 0) ? true : false;
+
+				$title = 'N/A';
+				$hardware = NULL;
+
+				if ($is_server)
+				{
+					if ( !\is_null($service->server_hardware))
+					{
+						$orderController = new OrderController();
+						$hardware = $orderController->unserializeServerProps( $service->server_hardware );
+
+						$title = \sprintf('RDP - %d cores, %d GB, %d GB SSD', $hardware['cores'], $hardware['memory'], $hardware['storage']);
+					}
+					else
+						$title = 'RDP';
+				}
+				else
+					$title = ( !\is_null( $service->title ) ) ? $service->title : 'N/A';
+
+				$data = [
+					'id'				=>	$service->id,
+					'pid'				=>	$service->pid,
+					'title'				=>	$title,
+					'status'			=>	$service->status,
+					'billing_amount'	=>	$service->billing_amount,
+					'expires_at'		=>	(!\is_null( $service->expires_at )) ? \strtotime( $service->expires_at ) : NULL,
+					'is_server'			=>	$is_server,
+					'created_at'		=>	\strtotime( $service->created_at )
+				];
+
+				if ( !$is_server )
+				{
+					$data['billing_type'] = $service->billing_type;
+					$data['description'] = (!\is_null($service->description)) ? \implode(', ', \explode("\n", $service->description)) : NULL;
+					$data['pid'] = $service->pid;
+					$data['bandwidth'] = [
+						'total'			=>	\floatval( $service->bandwidth ),
+						'used'			=>	\floatval( $service->bandwidth_used )
+					];
+				}
+				else
+				{
+					$data['server'] = [
+						'hardware'		=>	$hardware
+					];
+				}	
+			}
+		}
+
+		return Inertia::render('Clientarea/Services/View', [
+			'service'	=>	$data
+		]);
+	}
+
 
 	/**
 	 * Display the clientarea account settings view

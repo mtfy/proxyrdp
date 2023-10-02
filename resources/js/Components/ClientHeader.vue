@@ -44,7 +44,7 @@
 													</div>
 												</div>
 												<div class="flex flex-col p-0 m-0 justify-center items-center relative select-none cursor-pointer">
-													<span class="flex flex-col capitalize w-full font-motify text-white cursor-pointer select-none truncate text-[14px] leading-[22px]">{{ user.first_name }}&#160;{{ user.last_name }}</span>
+													<span class="flex flex-col capitalize w-full font-motify text-white cursor-pointer select-none truncate text-[14px] leading-[22px]">{{ formatName( user.username ) }}</span>
 												</div>
 												<div class="flex flex-col p-0 m-0 justify-center items-center relative select-none cursor-pointer">
 													<div class="inline-flex m-0 p-0 relative min-h-[24px] max-h-[24px] max-w-[24px] min-w-[24px] w-[24px] h-[24px] select-none">
@@ -79,7 +79,7 @@
 						<li class="flex flex-col relative select-none">
 							<div class="flex flex-col w-full relative">
 								<div class="inline-block relative">
-									<Link href="#" id="motify--balance" class="flex flex-col group no-underline w-full min-h-[40px] max-h-[40px] h-[40px] relative rounded-[4px] transition-all duration-300">
+									<Link href="/clientarea/wallet" id="motify--balance" class="flex flex-col group no-underline w-full min-h-[40px] max-h-[40px] h-[40px] relative rounded-[4px] transition-all duration-300">
 										<button type="button" class="flex flex-col w-full cursor-pointer items-center justify-center h-[40px] min-w-[40px] w-full py-[8px] px-[12px] border-0 whitespace-no-wrap text-white bg-transparent rounded-[12px] font-motify transition-colors duration-100 outline-0 z-[7997] hover:bg-theme-primary-800/50">
 											<div class="flex flex-row justify-center items-center relative whitespace-no-wrap space-x-[4px] space-y-0">
 												<div class="flex flex-col p-0 m-0 select-none leading-[0px]">
@@ -108,7 +108,7 @@
 													</div>
 												</div>
 												<div class="flex flex-col p-0 m-0 justify-center items-center relative select-none cursor-pointer">
-													<span class="flex flex-col capitalize w-full font-motify text-white cursor-pointer select-none leading-[18px] truncate text-[12px] md:leading-[22px] md:text-[14px]">{{ user.first_name }}&#160;{{ user.last_name }}</span>
+													<span class="flex flex-col capitalize w-full font-motify text-white cursor-pointer select-none leading-[18px] truncate text-[12px] md:leading-[22px] md:text-[14px]">{{ formatName( user.username ) }}</span>
 												</div>
 												<div class="flex flex-col p-0 m-0 justify-center items-center relative select-none cursor-pointer">
 													<div class="inline-flex m-0 p-0 relative min-h-[24px] max-h-[24px] max-w-[24px] min-w-[24px] w-[24px] h-[24px] select-none">
@@ -129,7 +129,7 @@
 	<div class="fixed max-w-[100%] w-full min-h-screen max-h-screen h-screen transition-all duration-300 z-[7996]" v-if="!proxy.userMenu.hidden" @click="proxy.userMenu.hidden = !proxy.userMenu.hidden">
 		<div class="flex flex-col p-[4px] space-y-[4px] md:space-y-0 max-w-[210px] md:max-w-[220px] w-full rounded-[8px] bg-theme-primary-700 motify-listbox-shadow fixed max-h-screen z-[7998]" :style="`left: ${(proxy.userMenu.pos.x - 10)}px; top: ${proxy.window.width <= 768 ? '66px' : '56px'};`" aria-orientation="vertical" role="listbox">
 			<div class="flex flex-col w-full bg-transparent justify-center cursor-pointer items-center gap-[8px] no-underline rounded-[8px] m-0 p-0" role="option">
-				<Link class="flex flex-row items-start justify-start cursor-pointer select-none gap-[8px] whitespace-pre-wrap p-[8px] w-full font-motify text-white transition-colors duration-300 leading-[20px] text-[13px] md:leading-[22px] md:text-[14px] hover:text-white/75">
+				<Link href="/clientarea/account" class="flex flex-row items-start justify-start cursor-pointer select-none gap-[8px] whitespace-pre-wrap p-[8px] w-full font-motify text-white transition-colors duration-300 leading-[20px] text-[13px] md:leading-[22px] md:text-[14px] hover:text-white/75">
 					<div class="flex flex-col select-none pointer-events-none">
 						<svg aria-hidden="true" role="img" class="flex flex-col select-none pointer-events-none w-full max-h-[24px] max-w-[100%] px-0 py-[2px]" width="24px" height="24px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor"><g><path fill="none" d="M0 0h24v24H0z"/><path d="M12 14v2a6 6 0 0 0-6 6H4a8 8 0 0 1 8-8zm0-1c-3.315 0-6-2.685-6-6s2.685-6 6-6 6 2.685 6 6-2.685 6-6 6zm0-2c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm2.595 7.812a3.51 3.51 0 0 1 0-1.623l-.992-.573 1-1.732.992.573A3.496 3.496 0 0 1 17 14.645V13.5h2v1.145c.532.158 1.012.44 1.405.812l.992-.573 1 1.732-.992.573a3.51 3.51 0 0 1 0 1.622l.992.573-1 1.732-.992-.573a3.496 3.496 0 0 1-1.405.812V22.5h-2v-1.145a3.496 3.496 0 0 1-1.405-.812l-.992.573-1-1.732.992-.572zM18 19.5a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3z"/></g></svg>
 					</div>
@@ -204,6 +204,11 @@
 		await nextTick().then(async() => {
 			calculateUserMenuPosition();
 		});
+	},
+
+	formatName = (name) => {
+		var buf = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+		return buf;
 	},
 	
 	handleScroll = (event) => {

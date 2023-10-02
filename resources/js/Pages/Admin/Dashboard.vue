@@ -1,7 +1,7 @@
 <template>
 	<ClientLayout :activePage="6">
 		<div class="flex flex-col w-full p-0 m-0">
-			<span class="flex flex-col font-medium whitespace-pre-wrap text-[20px] leading-[24px] capitalize">Welcome back, {{ user.first_name }}!</span>
+			<span class="flex flex-col font-medium whitespace-pre-wrap text-[20px] leading-[24px]">Welcome back, {{ formatName(user.username) }}!</span>
 		</div>
 		<div class="flex flex-col w-full p-0 m-0 mt-[8px]">
 			<span class="flex flex-col text-[14px] leading-[22px] text-theme-primary-foreground-clientarea-alt">Welcome to the administrative dashboard for ProxyRDP. Let&#x2019;s get started!</span>
@@ -57,6 +57,11 @@
 
 	page = usePage(),
 	user = computed(() => page.props.user),
+
+	formatName = (name) => {
+		var buf = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+		return buf;
+	},
 
 	locale = ('object' === typeof navigator && null !== navigator && 'language' in navigator && 'string' === typeof navigator.language) ? navigator.language : 'en-US',
 

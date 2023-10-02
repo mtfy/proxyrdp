@@ -144,6 +144,12 @@ return [
         // 'store'  => 'redis',
     ],
 
+	'nowpayments'	=>	[
+		'api_key'			=>	env('NOWPAYMENTS_API_KEY', ''),
+		'ipn_secret'		=>	env('NOWPAYMENTS_IPN_SECRET', ''),
+		'ipn_callback_url'	=>	env('NOWPAYMENTS_IPN_CALLBACK_URL', ''),
+	],
+
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers

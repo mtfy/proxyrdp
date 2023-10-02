@@ -66,7 +66,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
 			Route::get('/create/{id}', [OrderController::class, 'view'])->name('create');
 			Route::post('/create/{id}', [OrderController::class, 'createOrder'])->name('create');
 
-			Route::post('server', [OrderController::class, 'server'])->name('server');
+			Route::post('/server', [OrderController::class, 'createOrderServer'])->name('server');
 		});
 
 		Route::get('/invoices', [ClientController::class, 'showInvoices'])
@@ -77,6 +77,13 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 		Route::get('/services', [ClientController::class, 'showServices'])
 			->name('services');
+		
+		Route::prefix('services')->name('services.')->group(function () {
+			
+			Route::get('/{id}', [ClientController::class, 'showService'])->name('view');
+
+		});
+
 
 		Route::get('/wallet', [WalletController::class, 'create'])
 			->name('wallet');
@@ -116,6 +123,9 @@ Route::middleware(['auth', 'verified', 'role:Administrator'])->group(function ()
 			Route::get('/{id}', [UsersController::class, 'profile'])
 				->name('profile');
 
+			Route::post('/edit/{id}', [UsersController::class, 'updateProfile'])
+				->name('edit');
+			
 		});
 
 		Route::get('/orders', [OrdersController::class, 'create'])

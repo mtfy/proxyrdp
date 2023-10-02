@@ -2,7 +2,7 @@
 	<div class="flex flex-col w-full m-0 p-0">
 		<div class="flex flex-col relative sm:h-[3rem] z-[1] gap-[8px] items-center w-full py-0 px-[12px] outline-0 transition-all duration-300 border-[1px] border-[#0C0C0C0] rounded-[12px]" :class="(false !== proxy.focus) ? 'ring-2 ring-theme-primary-600 border-theme-primary-600' : ''">
 			<input
-				class="flex flex-col w-full text-[#0a0a0a] whitespace-nowrap text-ellipsis p-[12px] text-[12px] md:text-[14px] outline-0 transition-all duration-300 ring-0"
+				class="motify-input flex flex-col w-full text-[#0a0a0a] whitespace-nowrap text-ellipsis p-[12px] text-[12px] md:text-[14px] outline-0 transition-all duration-300 ring-0"
 				@focusin="proxy.focus = true"
 				@blur="proxy.focus = false"
 				:class="('string' === typeof customClass && null !== customClass && '' !== customClass) ? customClass : ''"

@@ -78,7 +78,7 @@
 					</div>
 				</div>
 				<div class="flex flex-col w-full lg:w-6/12">
-					<form class="flex flex-col w-full p-0 m-0 space-y-[20px]"  @submit.prevent="submitServer">
+					<form class="flex flex-col w-full p-0 m-0 space-y-[20px]" @submit.prevent="submitServer">
 						<div class="flex flex-col w-full">
 							<label class="flex flex-row w-full space-x-2" for="cores">
 								<div class="flex flex-col">Cores</div>
@@ -416,9 +416,10 @@
 			},
 			onSuccess: () => {
 				proxy.forms.servers.hideErrors = true;
-				Swal.fire({
-					icon: 'info',
-					text: `OK`
+				Toast.fire({
+					icon: 'success',
+					title: 'Success',
+					text: `Purchase completed!`
 				});
 			},
 			onError: (errors) => {
@@ -431,102 +432,6 @@
 			}
 		});
 	};
-
-	/*fetchCurrencies = async() => {
-		return new Promise(async(resolve, reject) => {
-
-			await fetch(`/payments/currencies`, {
-				method : 'POST',
-				credentials: 'same-origin',
-				headers: {
-					'Accept' : 'application/json', 
-					'X-CSRF-TOKEN' : usePage().props.csrf_token,
-				}
-			}).then(async(response) => {
-				return response.text();
-			}).then(async(result) => {
-				try {
-					result = JSON.parse(result);
-				} catch(err) {
-					reject({
-						success: false,
-						message: err,
-						data: {}
-					});
-				}
-
-				if (!result.success) {
-					reject(result);
-				} else {
-					resolve(result);
-				}
-			});
-
-		});
-	},
-
-	selectPaymentCurrency = async() => {
-		proxy.forms.servers.checkoutPending = true;
-
-		async function prompt() {
-			let currencies = {};
-			for (let i = 0; i !== proxy.payment.currencies.length; ++i)
-				currencies[proxy.payment.currencies[i].toLowerCase()] = proxy.payment.currencies[i].toUpperCase();
-			
-			const { value: currency } = await Swal.fire({
-				title: 'Payment method',
-				input: 'select',
-				inputOptions: {
-					'Crypto currencies': currencies
-				},
-				inputPlaceholder: 'Select a payment option',
-				showCancelButton: true,
-				inputValidator: (value) => {
-					return new Promise((resolve) => {
-						if (value.trim() === '') {
-							resolve('Please select a payment method.');
-						} else {
-							resolve();
-						}
-					});
-				}
-			});
-
-			if (currency) {
-				form.servers.payment_method = currency;
-				await nextTick().then(async() => {
-					await submitServer();
-				});
-			}
-			proxy.forms.servers.checkoutPending = false;
-		};
-
-		if (null === proxy.payment.currencies) {
-			await fetchCurrencies().then(async(result) => {
-				if (result.success !== false) {
-					proxy.payment.currencies = result.data;
-					await prompt();
-				} else {
-					Swal.fire({
-						icon: 'error',
-						title: 'Whoops!',
-						text: result.message
-					});
-				}
-			}).catch(async(result) => {
-				Swal.fire({
-					icon: 'error',
-					title: 'Whoops!',
-					text: result.message
-				});
-				proxy.forms.servers.checkoutPending = false;
-			});
-		} else {
-			await prompt();
-		}
-		
-		
-	};*/
 
 	onMounted(async() => {
 

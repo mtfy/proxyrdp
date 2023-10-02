@@ -19,28 +19,28 @@
 		</div>
 		<div class="flex flex-col w-full bg-theme-primary-500 absolute motify-mobile-menu-animation left-0 top-[100%]" :class="(proxy.mobileMenu !== false) ? 'max-h-[399px]' : 'max-h-[0px]'" :aria-hidden="false === proxy.mobileMenu">
 			<ul role="list" class="flex flex-col list-none motify-mobile-menu-animation relative" :class="(proxy.mobileMenu !== false) ? 'max-h-[399px]' : 'max-h-[0px]'" :aria-hidden="false === proxy.mobileMenu">
-				<li class="flex flex-col w-full min-h-[20px] relative">
+				<li class="w-full min-h-[20px] relative" :aria-hidden="!proxy.mobileMenu" :class="( !proxy.mobileMenu ? 'hidden invisible' : 'flex flex-col' )">
 					<Link href="/" class="flex flex-col w-full text-[18px] leading-[20px] align-center p-0 m-0 text-md text-gray-50 transition-colors ease-in-out duration-300 hover:text-gray-300 px-[20px] py-[12px]" :class="(!proxy.mobileMenu) ? 'invisible' : ''" :aria-hidden="false === proxy.mobileMenu">Home</Link>
 				</li>
-				<li class="flex flex-col w-full min-h-[20px] relative">
+				<li class="flex flex-col w-full min-h-[20px] relative" :aria-hidden="!proxy.mobileMenu" :class="( !proxy.mobileMenu ? 'hidden invisible' : 'flex flex-col' )">
 					<Link href="/" class="flex flex-col w-full text-[18px] leading-[20px] align-center p-0 m-0 text-md text-gray-50 transition-colors ease-in-out duration-300 hover:text-gray-300 px-[20px] py-[12px]" :class="(!proxy.mobileMenu) ? 'invisible' : ''" :aria-hidden="false === proxy.mobileMenu">Services</Link>
 				</li>
-				<li class="flex flex-col w-full min-h-[20px] relative">
+				<li class="flex flex-col w-full min-h-[20px] relative" :aria-hidden="!proxy.mobileMenu" :class="( !proxy.mobileMenu ? 'hidden invisible' : 'flex flex-col' )">
 					<Link href="/" class="flex flex-col w-full text-[18px] leading-[20px] align-center p-0 m-0 text-md text-gray-50 transition-colors ease-in-out duration-300 hover:text-gray-300 px-[20px] py-[12px]" :class="(!proxy.mobileMenu) ? 'invisible' : ''" :aria-hidden="false === proxy.mobileMenu">Contacts</Link>
 				</li>
-				<li class="flex flex-col w-full min-h-[20px] relative" v-if="user.guest">
+				<li class="flex flex-col w-full min-h-[20px] relative" v-if="user.guest" :aria-hidden="!proxy.mobileMenu" :class="( !proxy.mobileMenu ? 'hidden invisible' : 'flex flex-col' )">
 					<Link href="/clientarea/login" class="flex flex-col w-full text-[18px] leading-[20px] align-center p-0 m-0 text-md text-gray-50 transition-colors ease-in-out duration-300 hover:text-gray-300 px-[20px] py-[12px]" :class="(!proxy.mobileMenu) ? 'invisible' : ''" :aria-hidden="false === proxy.mobileMenu">Login</Link>
 				</li>
-				<li class="flex flex-col w-full min-h-[20px] relative" v-if="user.guest">
+				<li class="flex flex-col w-full min-h-[20px] relative pb-[10px]" v-if="user.guest" :aria-hidden="!proxy.mobileMenu" :class="( !proxy.mobileMenu ? 'hidden invisible' : 'flex flex-col' )">
 					<Link href="/clientarea/register" class="flex flex-col w-full text-[18px] leading-[20px] align-center p-0 m-0 text-md text-gray-50 transition-colors ease-in-out duration-300 hover:text-gray-300 px-[20px] py-[12px] capitalize" :class="(!proxy.mobileMenu) ? 'invisible' : ''" :aria-hidden="false === proxy.mobileMenu">Sign up</Link>
 				</li>
-				<li class="flex flex-col w-full min-h-[20px] relative">
+				<li class="flex flex-col w-full min-h-[20px] relative" v-if="!user.guest" :aria-hidden="!proxy.mobileMenu" :class="( !proxy.mobileMenu ? 'hidden invisible' : 'flex flex-col' )">
 					<Link href="/clientarea/" class="flex flex-col w-full text-[18px] leading-[20px] align-center p-0 m-0 text-md text-gray-50 transition-colors ease-in-out duration-300 hover:text-gray-300 px-[20px] py-[12px]" :class="(!proxy.mobileMenu) ? 'invisible' : ''" :aria-hidden="false === proxy.mobileMenu">Clientarea</Link>
 				</li>
-				<li class="flex flex-col w-full min-h-[20px] relative">
+				<li class="flex flex-col w-full min-h-[20px] relative" v-if="!user.guest" :aria-hidden="!proxy.mobileMenu" :class="( !proxy.mobileMenu ? 'hidden invisible' : 'flex flex-col' )">
 					<Link href="/clientarea/account" class="flex flex-col w-full text-[18px] leading-[20px] align-center p-0 m-0 text-md text-gray-50 transition-colors ease-in-out duration-300 hover:text-gray-300 px-[20px] py-[12px]" :class="(!proxy.mobileMenu) ? 'invisible' : ''" :aria-hidden="false === proxy.mobileMenu">Settings</Link>
 				</li>
-				<li class="flex flex-col w-full min-h-[20px] relative">
+				<li class="flex flex-col w-full min-h-[20px] relative" v-if="!user.guest" :aria-hidden="!proxy.mobileMenu" :class="( !proxy.mobileMenu ? 'hidden invisible' : 'flex flex-col' )">
 					<Link href="/logout" class="flex flex-col w-full text-[18px] leading-[20px] align-center p-0 m-0 text-md text-gray-50 transition-colors ease-in-out duration-300 hover:text-gray-300 px-[20px] py-[12px] capitalize" :class="(!proxy.mobileMenu) ? 'invisible' : ''" :aria-hidden="false === proxy.mobileMenu">Sign out</Link>
 				</li>
 			</ul>
@@ -130,7 +130,7 @@
 													</div>
 												</div>
 												<div class="flex flex-col p-0 m-0 justify-center items-center relative">
-													<span class="flex flex-col capitalize w-full font-motify text-white leading-[18px] truncate text-[12px] md:leading-[22px] md:text-[14px]">{{ user.first_name }}&#160;{{ user.last_name }}</span>
+													<span class="flex flex-col capitalize w-full font-motify text-white leading-[18px] truncate text-[12px] md:leading-[22px] md:text-[14px]">{{ formatName( user.username ) }}</span>
 												</div>
 												<div class="flex flex-col p-0 m-0 justify-center items-center relative">
 													<div class="inline-flex m-0 p-0 relative min-h-[24px] max-h-[24px] max-w-[24px] min-w-[24px] w-[24px] h-[24px] select-none">
@@ -227,6 +227,11 @@
 		if ('scrollY' in window && null !== window.scrollY && 'number' === typeof window.scrollY) {
 			proxy.scrollY = window.scrollY;
 		}
+	},
+
+	formatName = (name) => {
+		var buf = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
+		return buf;
 	},
 	
 	handleMobileMenu = () => {

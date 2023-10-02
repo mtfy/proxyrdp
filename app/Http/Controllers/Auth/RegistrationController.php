@@ -38,8 +38,7 @@ class RegistrationController extends Controller
 		$password_rule = (app()->isProduction()) ? Password::min(8)->letters()->numbers() : Password::min(6);
 
 		$validator = Validator::make(request()->all(), [
-			'first_name' => ['required', 'string', 'min:2', 'max:128'],
-			'last_name' => ['required', 'string', 'min:2', 'max:128'],
+			'username' => ['required', 'string', 'min:3', 'max:16', 'unique:App\Models\User,username'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:App\Models\User,email'],
             'password' => ['required', 'confirmed', $password_rule],
         ]);

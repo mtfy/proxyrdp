@@ -31,12 +31,8 @@
 							</div>
 							<form class="flex flex-col space-y-[20px] w-full relative" @submit.prevent="submit">
 								<div class="flex flex-col w-full m-0 p-0">
-									<label class="flex flex-col font-motify font-medium w-full capitalize text-slate-950 text-[12px] leading-[18px] md:text-[14px] md:leading-[22px]" for="first_name">First name</label>
-									<Input @update:model-value="delete props.errors.first_name" v-model="form.first_name" :type="'text'" :placeholder="'Enter your first name'" :maxlength="128" :autocomplete="'given-name'" :id="'first_name'" :required="true" />
-								</div>
-								<div class="flex flex-col w-full m-0 p-0">
-									<label class="flex flex-col font-motify font-medium w-full capitalize text-slate-950 text-[12px] leading-[18px] md:text-[14px] md:leading-[22px]" for="last_name">Last name</label>
-									<Input @update:model-value="delete props.errors.last_name" v-model="form.last_name" :type="'text'" :placeholder="'Enter your last name'" :maxlength="128" :autocomplete="'family-name'" :id="'last_name'" :required="true" />
+									<label class="flex flex-col font-motify font-medium w-full capitalize text-slate-950 text-[12px] leading-[18px] md:text-[14px] md:leading-[22px]" for="username">First name</label>
+									<Input @update:model-value="delete props.errors.username" v-model="form.username" :type="'text'" :placeholder="'Enter your username'" :maxlength="16"  :autocomplete="'username'" :id="'username'" :required="true" />
 								</div>
 								<div class="flex flex-col w-full m-0 p-0">
 									<label class="flex flex-col font-motify font-medium w-full capitalize text-slate-950 text-[12px] leading-[18px] md:text-[14px] md:leading-[22px]" for="email">Email</label>
@@ -121,8 +117,7 @@
 	}),
 	
 	form = useForm({
-		first_name: '',
-		last_name: '',
+		username: '',
 		email: '',
 		password: '',
 		password_confirmation: ''

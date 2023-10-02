@@ -30,8 +30,8 @@
 								<Input  @update:model-value="delete props.errors.curent_password" v-model="form.password.current_password" :type="'password'" :placeholder="'Enter your current password'" :autocomplete="'current-password'" :id="'current_password'" :name="'Current Password'" :required="true" />
 							</div>
 							<div class="flex flex-col w-[10px] max-w-[10px] m-0 p-0 absolute z-[-1394] invisible" aria-hidden="true" style="left: -99219px !important; top: 42.66vh !important">
-								<label class="flex flex-col font-motify font-medium max-w-[10px] min-w-[10px] w-full capitalize text-slate-950 text-[12px] leading-[18px] md:text-[14px] md:leading-[22px]  absolute z-[-1394]" for="user_email" aria-hidden="true" style="left: -99219px !important; top: 42.66vh !important">Email</label>
-								<input type="hidden" class="flex flex-col max-w-[10px] min-w-[10px] w-full absolute z-[-1394]" :value="user.email" autocomplete="username" aria-autocomplete="username" name="Username" id="user_email" aria-hidden="true" style="left: -99219px !important; top: 42.66vh !important" />
+								<label class="flex flex-col font-motify font-medium max-w-[10px] min-w-[10px] w-full capitalize text-slate-950 text-[12px] leading-[18px] md:text-[14px] md:leading-[22px]  absolute z-[-1394]" for="user_username" aria-hidden="true" style="left: -99219px !important; top: 42.66vh !important">Username</label>
+								<input type="hidden" class="flex flex-col max-w-[10px] min-w-[10px] w-full absolute z-[-1394]" :value="user.username" autocomplete="username" aria-autocomplete="username" name="Username" id="user_username" aria-hidden="true" style="left: -99219px !important; top: 42.66vh !important" />
 							</div>
 							<div class="flex flex-col w-full m-0 p-0">
 								<label class="flex flex-col font-motify font-medium w-full capitalize text-slate-950 text-[12px] leading-[18px] md:text-[14px] md:leading-[22px]" for="password">New password</label>

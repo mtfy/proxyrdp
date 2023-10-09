@@ -55,10 +55,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 		Route::get('/', [ClientController::class, 'showIndex'])
 			->name('index');
 
-		Route::get('/balance', function(Request $request) {
-			
-		});
-
 		Route::get('/order', [OrderController::class, 'create'])
 			->name('order');
 		Route::prefix('order')->name('order.')->group(function () {

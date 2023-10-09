@@ -8,10 +8,10 @@
 					</Link>
 				</div>
 			</div>
-			<div class="flex flex-col w-full justify-start p-0 m-0 relative">
+			<div class="flex flex-col w-full justify-start p-0 m-0 mt-1 relative">
 				<div class="flex flex-row gap-x-5">
 					<div class="flex flex-col">
-
+						<p class="text-gray-100 p-0 m-0 font-motify text-sm">Copyright &#xa9; Motify, 2023.</p>
 					</div>
 				</div>
 			</div>

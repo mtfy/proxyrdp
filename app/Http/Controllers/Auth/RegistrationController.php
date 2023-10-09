@@ -50,8 +50,7 @@ class RegistrationController extends Controller
 		$validator = $validator->validated();
 
 		$user = User::create([
-			'first_name' => $validator['first_name'],
-			'last_name' => $validator['last_name'],
+			'username' => $validator['username'],
             'email' => $validator['email'],
             'password' => Hash::make($validator['password'])
         ]);

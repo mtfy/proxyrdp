@@ -326,6 +326,10 @@ body, html {
 	background: #f3f4f6;
 }
 
+.motify-input {
+	background: inherit
+}
+
 input.motify-input:focus {
 	outline:none !important;
     outline-width: 0 !important;

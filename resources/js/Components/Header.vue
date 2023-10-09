@@ -230,6 +230,9 @@
 	},
 
 	formatName = (name) => {
+		if (null === name || 'string' !== typeof name) {
+			return 'Guest';
+		}
 		var buf = name.charAt(0).toUpperCase() + name.slice(1).toLowerCase();
 		return buf;
 	},
